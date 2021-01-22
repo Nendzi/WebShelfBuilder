@@ -5,57 +5,82 @@
     <meta charset="utf-8" />
     <link href="/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css" />
-    <!-- Common packages: jQuery, jsTree -->
+     <!--Common packages: jQuery, jsTree--> 
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/jstree.min.js"></script>
-    <!-- .NET SignalR -->
+     <!--.NET SignalR--> 
     <script src="//unpkg.com/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
-    <!-- Autodesk Forge Viewer files -->
+     <!--Autodesk Forge Viewer files--> 
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
-    <!-- this project files -->
-    <link href="css/main.css" rel="stylesheet" />
-    <script src="js/ForgeTree.js"></script>
-    <script src="js/ForgeViewer.js"></script>
+     <!--this project files--> 
+    <link href="/css/main.css" rel="stylesheet" />
+    <script src="/js/ForgeTree.js"></script>
+    <script src="/js/ForgeViewer.js"></script>
     <script src="/js/ForgeDesignAutomation.js"></script>
+    <script src="/js/three.js"></script>
 </head>
 
-<body style="height: 100%;">
-    <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
-            <ul class="nav navbar-nav left">
-                <li>
-                    <a href="https://www.teamcad.rs/index.php/srb" target="_blank">
-                        <img alt="TeamCAD" src="https://www.teamcad.rs/images/Logo/LOGO_TeamCAD_logo.png" height="20">
-                    </a>
-                </li>
-            </ul>
+<body>
+    <div class="column">
+        <!-- oprions bar -->
+        <div class="communicationPanel">
+            <div class="panelSetup">
+                <ul class="navbar">
+                    <li>
+                        <a href="https://www.teamcad.rs/index.php/srb" target="_blank">
+                            <img alt="TeamCAD" src="https://www.teamcad.rs/images/Logo/LOGO_TeamCAD_logo.png">
+                        </a>
+                    </li>
+                    <li class="settingIcon">
+                        <img alt="Settings" src="https://img.icons8.com/nolan/64/settings--v1.png" />
+                    </li>
+                </ul>
+            </div>
+            <div class="panelHeading">
+                Buckets &amp; Objects
+                <span id="refreshBuckets" class="glyphicon glyphicon-refresh" style="cursor: pointer"></span>
+                <button class="btn" id="showFormCreateBucket" data-toggle="modal" data-target="#createBucketModal">
+                    <span class="glyphicon glyphicon-folder-close"></span> New bucket
+                </button>
+            </div>
+            <div class="panelBucket" id="appBuckets">
+                tree here
+            </div>
+            <div class="properties">
+
+            </div>
         </div>
-    </nav>
-    <!-- End of navbar -->
-    <div class="container-fluid" style="margin-top: 70px;">
-        <div class="row">
-            <div class="communicationPanel">
-                <div class="panel-heading" data-toggle="tooltip">
-                    Buckets &amp; Objects
-                    <span id="refreshBuckets" class="glyphicon glyphicon-refresh" style="cursor: pointer"></span>
-                    <button class="btn btn-xs btn-info" style="float: right" id="showFormCreateBucket" data-toggle="modal" data-target="#createBucketModal">
-                        <span class="glyphicon glyphicon-folder-close"></span> New bucket
-                    </button>
-                </div>
-                <div id="appBuckets">
-                    tree here
+        <!-- End of options bar -->
+        <div id="visual" class="visualPanel">
+            <div>
+                <button id="forSketcher" class="btn onleft">Sketch panel</button>
+                <button id="forModeler" class="btn onleft btn-inactive">Forge model and documentation</button>
+                <button id="forVisualization" class="btn onleft btn-inactive">Visualisation</button>
+            </div>
+            <div id="sketchViewer"></div>
+            <div id="forgeViewer">
+                <div>
+                    <pre id="outputlog" style="height: calc(100vh - 120px); overflow-y: scroll;"></pre>
                 </div>
             </div>
-            <div class="visualPanel">
-                <div><pre id="outputlog" style="height: calc(100vh - 120px); overflow-y: scroll;"></pre></div>
-                <div id="forgeViewer"></div>
-            </div>
+            <div id="showroomViewer"></div>
         </div>
     </div>
+
     <form id="uploadFile" method='post' enctype="multipart/form-data">
         <input id="hiddenUploadField" type="file" name="theFile" style="visibility:hidden" />
     </form>
+    <!-- Contextual menu-->
+    <div class="custom-cm" id="cm">
+        <div class="custom-cm-item" id="stopDrawLine">Stop</div>
+        <div class="custom-cm-item" id="closeLines">Close</div>
+        <div class="custom-cm-item">Stop</div>
+        <div class="custom-cm-divider"></div>
+        <div class="custom-cm-item">Stop</div>
+    </div>
+    <!-- end of contextual menu-->
+    <script src="js/Sketcher.js"></script>
+    <script src="js/ContextualMenu.js"></script>
 </body>
 </html>

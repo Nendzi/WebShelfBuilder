@@ -1,23 +1,121 @@
 ﻿html, body {
-    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.column {
+    width: 100%;
+    height: calc(100vh - 28px);
+}
+
+.navbar {
+    list-style-type: none;
+    height: 40px;
+    margin: 8px 20px;
+    padding: 0;
+}
+
+img {
+    height: 40px;
+}
+
+.settingIcon {
+    float: right;
+    margin-right: 20px;
+}
+
+li {
+    float: left;
+}
+
+.communicationPanel, .visualPanel {
+    float: left;
+    border: 2px solid red;
+}
+
+.communicationPanel {
+    width: 30%;
+    min-width: 350px;
     height: 100%;
 }
 
-.fill {
-    height: calc(100vh - 100px);
+.panelSetup, .panelHeading, .panelBucket {
+    width: auto;
+    height: auto;
+    display: block;
 }
 
-body {
-    padding-top: 60px; /* space for the top nav bar */
-    margin-right: 30px;
+.panelHeading, .panelBucket {
+    padding: 8px 20px;
 }
 
-#appBuckets {
-    overflow: auto;
+.visualPanel {
+    width: 69%;
+    height: 100%;
+}
+
+.btn {
+    float: right;
+    padding: 4px 12px;
+    background-color: deepskyblue;
+    color: darkblue;
+    border: 2px solid slateblue;
+}
+
+.onleft {
+    float: left;
+}
+
+.btn-inactive {
+    background-color: beige;
+    color: darkblue;
+    border: 2px solid red;
+}
+
+#sketchViewer {
+    display: initial;
     width: 100%;
-    height: calc(100vh - 150px);
+    height: 100%;
 }
 
 #forgeViewer {
+    display: none;
     width: 100%;
 }
+
+#showroomViewer {
+    display: none;
+    width: 100%;
+}
+
+span {
+    cursor: pointer;
+}
+
+.custom-cm {
+    background-color: #ffffff;
+    border: 1px solid #c3c3c3;
+    box-shadow: 1px 10px 10px rgba(0,0,0,0.2);
+    padding: 10px 0;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    width: 200px;
+    display: none;
+}
+
+.custom-cm-item {
+    cursor: pointer;
+    padding: 8px 15px;
+}
+
+    .custom-cm-item:hover {
+        background-color: #f8f8f8;
+    }
+
+.custom-cm-divider {
+    border-bottom: 1px solid #808080;
+    margin: 10px 0;
+}
+
+
