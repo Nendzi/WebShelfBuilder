@@ -5,15 +5,17 @@
     <meta charset="utf-8" />
     <link href="/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css" />
-     <!--Common packages: jQuery, jsTree--> 
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600&display=swap" rel="stylesheet">
+    <!--Common packages: jQuery, jsTree-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/jstree.min.js"></script>
-     <!--.NET SignalR--> 
+    <!--.NET SignalR-->
     <script src="//unpkg.com/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
-     <!--Autodesk Forge Viewer files--> 
+    <!--Autodesk Forge Viewer files-->
     <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
-     <!--this project files--> 
+    <!--this project files-->
     <link href="/css/main.css" rel="stylesheet" />
     <script src="/js/ForgeTree.js"></script>
     <script src="/js/ForgeViewer.js"></script>
@@ -47,8 +49,15 @@
             <div class="panelBucket" id="appBuckets">
                 tree here
             </div>
-            <div class="properties">
-
+            <div class="lineProperties" id="lineProp">
+                <label for="fpx">Start point X:</label>
+                <input type="number" id="firstPoint_x" name="fpx" min="100" max="2500" required><br>
+                <label for="fpy">Start point Y:</label>
+                <input type="number" id="firstPoint_y" name="fpy" min="100" max="2500" required><br>
+                <label for="epx">End point X:</label>
+                <input type="number" id="lastPoint_x" name="epx" min="100" max="2500" required><br>
+                <label for="epy">End point Y:</label>
+                <input type="number" id="lastPoint_y" name="epy" min="100" max="2500" required><br>
             </div>
         </div>
         <!-- End of options bar -->
@@ -77,9 +86,17 @@
         <div class="custom-cm-item" id="closeLines">Close</div>
         <div class="custom-cm-item">Stop</div>
         <div class="custom-cm-divider"></div>
-        <div class="custom-cm-item">Stop</div>
+        <div class="custom-cm-item" id="clearCanvas">Clear all</div>
     </div>
     <!-- end of contextual menu-->
+    <!-- Info window for sketcher-->
+    <div class="information" id="infoWnd">
+        <div class="topRibbon">
+            <button id="closeBtn">X</button>
+        </div>
+        <p> Close command can be used only on three and more lines.</p>
+    </div>
+    <!-- end of info window-->
     <script src="js/Sketcher.js"></script>
     <script src="js/ContextualMenu.js"></script>
 </body>

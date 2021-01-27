@@ -1,6 +1,7 @@
 ﻿html, body {
     margin: 0;
     padding: 0;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
 }
 
 .column {
@@ -30,13 +31,13 @@ li {
 
 .communicationPanel, .visualPanel {
     float: left;
-    border: 2px solid red;
 }
 
 .communicationPanel {
     width: 30%;
     min-width: 350px;
     height: 100%;
+    border: 2px solid #a2a2a2;
 }
 
 .panelSetup, .panelHeading, .panelBucket {
@@ -49,6 +50,22 @@ li {
     padding: 8px 20px;
 }
 
+#appBuckets {
+    overflow: auto;
+    width: 100%;
+    height: calc(100vh - 450px);
+}
+
+#lineProp {
+    visibility: hidden;
+    padding: 20px;
+}
+
+.lineProperties label {
+    width: 119px;
+    display: inline-block;
+}
+
 .visualPanel {
     width: 69%;
     height: 100%;
@@ -57,9 +74,13 @@ li {
 .btn {
     float: right;
     padding: 4px 12px;
-    background-color: deepskyblue;
+    background-color: #9b8968;
     color: darkblue;
-    border: 2px solid slateblue;
+    border-left: 1px solid #9b8968;
+    border-right: 1px solid #9b8968;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .onleft {
@@ -69,7 +90,8 @@ li {
 .btn-inactive {
     background-color: beige;
     color: darkblue;
-    border: 2px solid red;
+    border-left: 1px solid #9b8968;
+    border-right: 1px solid #9b8968;
 }
 
 #sketchViewer {
@@ -109,13 +131,36 @@ span {
     padding: 8px 15px;
 }
 
-    .custom-cm-item:hover {
-        background-color: #f8f8f8;
-    }
+.custom-cm-item:hover {
+    background-color: #f8f8f8;
+}
 
 .custom-cm-divider {
     border-bottom: 1px solid #808080;
     margin: 10px 0;
 }
 
+.information {
+    position: absolute;
+    width: 200px;
+    border: 1px solid red;
+    display: none;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(155, 137, 104,0.4);
+}
 
+.information p {
+    margin: 10px;
+}
+
+.topRibbon {
+    height: 18px;
+}
+
+#closeBtn {
+    background-color: red;
+    color: white;
+    font-size: 18px;
+    float: right;
+}
