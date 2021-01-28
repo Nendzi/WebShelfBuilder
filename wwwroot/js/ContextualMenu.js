@@ -33,6 +33,14 @@ window.addEventListener('click', () => {
 
 $('#stopDrawLine').click(stopDrawing);
 
+function stopDrawing() {
+    canDrawNewLine = true;
+    selectionMode = true;
+    updatePosition(0, 0, 0);
+    updatePosition(0, 0, 3);
+    settingSwitches();
+}
+
 $('#closeLines').click(function () {
     // at least four points must be on canvas for closing
     if (scene.children.length > 3) {
@@ -50,15 +58,46 @@ $('#closeLines').click(function () {
 
 $('#clearCanvas').click(clearAllLines);
 
-function stopDrawing() {
-    canDrawNewLine = true;
-    selectionMode = true;
-    updatePosition(0, 0, 0);
-    updatePosition(0, 0, 3);
-    settingSwitches();
-}
-
 function clearAllLines() {
     initEnv();
     initVars();
+}
+
+$('#deleteLine').click(deletedSelectedLine);
+
+function deletedSelectedLine() {
+    //deletee seleced line
+    // set index on zero
+    var index = 0;
+    // search for selected line in all lines
+    for (var line of scene.children) {
+        // compare like objects
+        if (line===pickedObject) {
+            //if line have been found delete it from children
+            scene.children.splice(index, 1);
+            // simulate escape pressed
+            escPressed();
+            // show changes
+            render();
+            // job is done, go home
+            return;
+        }
+        index++;
+    }
+}
+
+$('#filterVert').click(getVerticalCoordinate);
+
+function getVerticalCoordinate() {
+    anyFilterOn = true;
+    verFilterOn = true;
+    selectionMode = true;
+}
+
+$('#filterHor').click(getHorizontalCoordinate);
+
+function getHorizontalCoordinate() {
+    anyFilterOn = true;
+    horFilterOn = true;
+    selectionMode = true;
 }

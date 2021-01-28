@@ -10,17 +10,20 @@ var MAX_POINTS;
 var drawCount;
 
 var points;
-var pointsNumber 
+var pointsNumber
 
 // catch cursor coordinates when click on sketcher
-var cursor_x ;
-var cursor_y ;
-var isItFirstCatch ;
+var cursor_x;
+var cursor_y;
+var isItFirstCatch;
 
-var needAnimate ;
-var canDrawNewLine ;
-var selectionMode ;
-var keepSelected ;
+var needAnimate;
+var canDrawNewLine;
+var selectionMode;
+var keepSelected;
+var anyFilterOn;
+var horFilterOn;
+var verFilterOn;
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -88,6 +91,9 @@ function initVars() {
     canDrawNewLine = false;
     selectionMode = false;
     keepSelected = false;
+    anyFilterOn = false;
+    horFilterOn = false;
+    verFilterOn = false;
 
     pickedObject = null;
 }
@@ -169,9 +175,10 @@ function updatePreview() {
     render();
 }
 
-document.getElementById('sketchViewer').onclick = function (event) {    
+document.getElementById('sketchViewer').onclick = function (event) {
+    console.log(points);
     // first check if something selected
-    if (pickedObject) {
+    if (pickedObject && !anyFilterOn) {
         // and show end points coordinates
         showLineProperties();
         // set var for keeping selection
@@ -179,6 +186,60 @@ document.getElementById('sketchViewer').onclick = function (event) {
         // and restrict new selection
         selectionMode = false;
         // immedate return from function and do not draw line
+        return;
+    }
+
+    // check if app is in filter coordinates mode
+    if (pickedObject && anyFilterOn) {
+        if (verFilterOn) {
+            var mouse_x = event.offsetX - windowWidth / 2;
+            var mouse_y = event.offsetY - windowHeight / 2;
+            var firstX = pickedObject.geometry.attributes.position.array[0];
+            var secondX = pickedObject.geometry.attributes.position.array[3];
+            if (distance(firstX, mouse_x) < distance(secondX, mouse_x)) {
+                // firstX should be selected
+                x_coord = firstX;
+            }
+            else {
+                // secondX should be selected
+                x_coord = secondX;
+            }
+            y_coord = cursor_y;
+            console.log("x=" + x_coord + ', y=' + y_coord);
+        }
+        if (horFilterOn) {
+            var firstY = pickedObject.geometry.attributes.position.array[1];
+            var secondY = pickedObject.geometry.attributes.position.array[4];
+            if (distance(firstY, mouse_y) < distance(secondY, mouse_y)) {
+                // firstX should be selected
+                y_coord = firstY;
+            }
+            else {
+                // secondX should be selected
+                y_coord = secondY;
+            }
+            x_coord = cursor_x;
+        }
+        // reset all setted flags
+        anyFilterOn = false;
+        verFilterOn = false;
+        horFilterOn = false;
+        selectionMode = false;
+
+        // set first point for line preview
+        updatePosition(x_coord, y_coord, 0);
+        // set point for line. Which point will be depends of array points
+        points.push(new THREE.Vector3(x_coord, y_coord, 0));
+        console.log(points);
+        //it is time for drawing line
+        createLine();
+        settingSwitches();
+        // u ovom momentu sačuvaj koordinate tačke koja je stvarno izračunata i na osnovu kojih je napravljena nova linija
+        cursor_x = x_coord;
+        cursor_y = y_coord;
+        // similate esc pressed
+        escPressed();
+        // job is done, go out.
         return;
     }
 
@@ -212,12 +273,20 @@ document.getElementById('sketchViewer').onclick = function (event) {
         firstPointX_coord = x_coord;
         firstPointY_coord = y_coord;
     }
+
+    //it is time for drawing line
     createLine();
     settingSwitches();
 
     // u ovom momentu sačuvaj koordinate tačke koja je stvarno izračunata i na osnovu kojih je napravljena nova linija
     cursor_x = x_coord;
     cursor_y = y_coord;
+}
+
+function distance(a, b) {
+    var dist;
+    dist = Math.abs(a - b);
+    return dist;
 }
 
 function createLine() {
@@ -270,14 +339,18 @@ window.onkeyup = function (event) {
     var keyChar = event.key;
 
     if (keyChar == 'Escape') {
-        keepSelected = false;
-        selectionMode = true;
-        //simulate a little mouse movement
-        mouse.x++;
-        mouse.y++;
-        selectionHandler();
-        // hide properties if the is no selection
-        const propPanel = document.getElementById('lineProp');
-        propPanel.style.visibility = 'hidden';
+        escPressed();
     }
+}
+
+function escPressed() {
+    keepSelected = false;
+    selectionMode = true;
+    //simulate a little mouse movement
+    mouse.x++;
+    mouse.y++;
+    selectionHandler();
+    // hide properties if the is no selection
+    const propPanel = document.getElementById('lineProp');
+    propPanel.style.visibility = 'hidden';
 }
