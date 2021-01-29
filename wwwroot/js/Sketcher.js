@@ -6,6 +6,8 @@ var renderer, scene, camera
 
 var linePreview;
 var line;
+var firstPointMarker;
+var secondPointMarker;
 var MAX_POINTS;
 var drawCount;
 
@@ -15,6 +17,7 @@ var pointsNumber
 // catch cursor coordinates when click on sketcher
 var cursor_x;
 var cursor_y;
+var authenticCoord;
 var isItFirstCatch;
 
 var needAnimate;
@@ -57,6 +60,7 @@ function initEnv() {
     //geometry
     const preLineGeometry = new THREE.BufferGeometry();
     const lineGeometry = new THREE.BufferGeometry();
+    const sphereGeometry = new THREE.SphereGeometry(5, 32, 32);
 
     //attributes
     var positions = new Float32Array(6);
@@ -70,10 +74,20 @@ function initEnv() {
 
     //material    
     const preLineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 });
+    const firstPointMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff });
+    const secondPointMaterial = new THREE.MeshBasicMaterial({ color: 0x00ffff });
 
     //line
     linePreview = new THREE.Line(preLineGeometry, preLineMaterial);
     scene.add(linePreview);
+
+    //spheres as point markers
+    firstPointMarker = new THREE.Mesh(sphereGeometry, firstPointMaterial);
+    scene.add(firstPointMarker);
+    secondPointMarker = new THREE.Mesh(sphereGeometry, secondPointMaterial);
+    scene.add(secondPointMarker);
+    setMakrerOnLineEnd(3);
+    setMakrerOnLineEnd(4);
 
     //first render
     render();
@@ -82,6 +96,7 @@ function initEnv() {
 function initVars() {
     MAX_POINTS = 80;
     points = [];
+    authenticCoord = [];
     pointsNumber = 0;
     cursor_x = -1;
     cursor_y = -1;
@@ -101,9 +116,12 @@ function initVars() {
 function updatePosition(x, y, index) {
     var positions = linePreview.geometry.attributes.position.array;
 
+    authenticCoord[0 + index] = x + windowWidth / 2;
+    authenticCoord[1 + index] = y + windowHeight / 2;
+
     positions[index++] = x;
     positions[index++] = y;
-    positions[index++] = 0;
+    positions[index++] = 1;
 }
 
 function render() {
@@ -141,6 +159,12 @@ document.getElementById('sketchViewer').onmousemove = function (event) {
         if (needAnimate) {
             updatePosition(x_coord, y_coord, 3);
             updatePreview();
+            //show text which represents lenght
+            var info = document.getElementById('info');
+            info.style.display = 'block';
+            info.style.left = (authenticCoord[0] + authenticCoord[3]) / 2 + 'px';
+            info.style.top = (authenticCoord[1] + authenticCoord[4]) / 2 + 'px';
+            info.innerHTML = lineLength(authenticCoord);
         }
     }
 
@@ -151,6 +175,13 @@ document.getElementById('sketchViewer').onmousemove = function (event) {
 
         selectionHandler();
     }
+}
+
+function lineLength(coord) {
+    var deltaX = Math.abs(coord[3] - coord[0]);
+    var deltaY = Math.abs(coord[4] - coord[1]);
+
+    return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 }
 
 function selectionHandler() {
@@ -175,12 +206,41 @@ function updatePreview() {
     render();
 }
 
+function setMakrerOnLineEnd(endId,zIndex) {
+    //endId can be 1 or 2
+    var marker;
+    var xm;
+    var ym;
+
+    if (endId == 1) {
+        xm = pickedObject.geometry.attributes.position.array[0];
+        ym = pickedObject.geometry.attributes.position.array[1];
+    }
+    else if (endId == 2) {
+        xm = pickedObject.geometry.attributes.position.array[3];
+        ym = pickedObject.geometry.attributes.position.array[4];
+    } else {
+        //use 3 or 4 for moving sphere beyond camera
+        endId = endId-2;
+        xm = 0;
+        ym = 0;
+        zIndex = 200;
+    }
+    marker = scene.children[endId];
+    marker.position.copy(new THREE.Vector3(xm, ym, zIndex));
+    marker.matrixAutoUpdate = false;
+    marker.updateMatrix();
+}
+
 document.getElementById('sketchViewer').onclick = function (event) {
-    console.log(points);
     // first check if something selected
     if (pickedObject && !anyFilterOn) {
         // and show end points coordinates
         showLineProperties();
+        // add point markers on the line ends
+        setMakrerOnLineEnd(1,10);
+        setMakrerOnLineEnd(2,10);
+        render();
         // set var for keeping selection
         keepSelected = true;
         // and restrict new selection
@@ -205,7 +265,6 @@ document.getElementById('sketchViewer').onclick = function (event) {
                 x_coord = secondX;
             }
             y_coord = cursor_y;
-            console.log("x=" + x_coord + ', y=' + y_coord);
         }
         if (horFilterOn) {
             var firstY = pickedObject.geometry.attributes.position.array[1];
@@ -230,7 +289,6 @@ document.getElementById('sketchViewer').onclick = function (event) {
         updatePosition(x_coord, y_coord, 0);
         // set point for line. Which point will be depends of array points
         points.push(new THREE.Vector3(x_coord, y_coord, 0));
-        console.log(points);
         //it is time for drawing line
         createLine();
         settingSwitches();
@@ -321,16 +379,6 @@ function settingSwitches() {
     }
 }
 
-function showLineProperties() {
-    const propPanel = document.getElementById('lineProp');
-    propPanel.style.visibility = 'visible';
-
-    document.getElementById('firstPoint_x').value = pickedObject.geometry.attributes.position.array[0];
-    document.getElementById('firstPoint_y').value = pickedObject.geometry.attributes.position.array[1];
-    document.getElementById('lastPoint_x').value = pickedObject.geometry.attributes.position.array[3];
-    document.getElementById('lastPoint_y').value = pickedObject.geometry.attributes.position.array[4];
-}
-
 document.getElementById('closeBtn').onclick = function (event) {
     document.getElementById('infoWnd').style.display = 'none';
 }
@@ -353,4 +401,7 @@ function escPressed() {
     // hide properties if the is no selection
     const propPanel = document.getElementById('lineProp');
     propPanel.style.visibility = 'hidden';
+    // hide markers-spheres by moving them beyond camera
+    setMakrerOnLineEnd(3);
+    setMakrerOnLineEnd(4);
 }

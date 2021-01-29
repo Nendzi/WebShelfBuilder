@@ -66,9 +66,29 @@ li {
     display: inline-block;
 }
 
+.startPoint, .endPoint {
+    width: 215px;
+    display: inline-block;
+}
+
+.startPoint {
+    border: 2px solid #ff00ff;
+    background-color: rgba(255,0,255,0.5);    
+}
+
+.endPoint {
+    border: 2px solid #00ffff;
+    background-color: rgba(0,255,255,0.5);
+}
+
 .visualPanel {
     width: 69%;
     height: 100%;
+}
+
+.optionBtns {
+    min-height: 10px;
+    overflow: hidden;
 }
 
 .btn {
@@ -83,6 +103,12 @@ li {
     font-weight: 600;
 }
 
+.btn-massive {
+    height: 40px;
+    width: 65px;
+    margin: 2px;
+}
+
 .onleft {
     float: left;
 }
@@ -95,9 +121,20 @@ li {
 }
 
 #sketchViewer {
+    position: relative;
     display: initial;
     width: 100%;
     height: 100%;
+}
+
+#info {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 45px;
+    text-align: center;
+    z-index: 100;
+    display: none;
 }
 
 #forgeViewer {
@@ -131,9 +168,9 @@ span {
     padding: 8px 15px;
 }
 
-.custom-cm-item:hover {
-    background-color: #f8f8f8;
-}
+    .custom-cm-item:hover {
+        background-color: #f8f8f8;
+    }
 
 .custom-cm-divider {
     border-bottom: 1px solid #808080;
@@ -150,9 +187,9 @@ span {
     background-color: rgba(155, 137, 104,0.4);
 }
 
-.information p {
-    margin: 10px;
-}
+    .information p {
+        margin: 10px;
+    }
 
 .topRibbon {
     height: 18px;

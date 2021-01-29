@@ -50,24 +50,44 @@
                 tree here
             </div>
             <div class="lineProperties" id="lineProp">
-                <label for="fpx">Start point X:</label>
-                <input type="number" id="firstPoint_x" name="fpx" min="100" max="2500" required><br>
-                <label for="fpy">Start point Y:</label>
-                <input type="number" id="firstPoint_y" name="fpy" min="100" max="2500" required><br>
-                <label for="epx">End point X:</label>
-                <input type="number" id="lastPoint_x" name="epx" min="100" max="2500" required><br>
-                <label for="epy">End point Y:</label>
-                <input type="number" id="lastPoint_y" name="epy" min="100" max="2500" required><br>
+                <div>
+                    <div class="startPoint">
+                        <label for="fpx">Start point X:</label>
+                        <input type="number" id="firstPoint_x" name="fpx" min="100" max="2500" required><br>
+                        <label for="fpy">Start point Y:</label>
+                        <input type="number" id="firstPoint_y" name="fpy" min="100" max="2500" required>
+                    </div>
+                    <button id="updateLength1" class="btn btn-massive">Update Length</button>
+                    <button id="extendStartPoint1" class="btn btn-massive">Extend</button>
+                    <button id="pasteStartPoint1" class="btn btn-massive">Move</button>
+                    <button id="copyStartPoint1" class="btn btn-massive">Grab</button>
+                </div>
+                <div>
+                    <div class="endPoint">
+                        <label for="epx">End point X:</label>
+                        <input type="number" id="lastPoint_x" name="epx" min="100" max="2500" required><br>
+                        <label for="epy">End point Y:</label>
+                        <input type="number" id="lastPoint_y" name="epy" min="100" max="2500" required>
+                    </div>
+                    <button id="updateLength2" class="btn btn-massive">Update Length</button>
+                    <button id="extendStartPoint2" class="btn btn-massive">Extend</button>
+                    <button id="pasteStartPoint2" class="btn btn-massive">Move</button>
+                    <button id="copyStartPoint2" class="btn btn-massive">Grab</button>
+                </div>
+                <label for="lght">Line length:</label>
+                <input type="number" id="lineLen" name="lght" min="100" max="2500" required>                
             </div>
         </div>
         <!-- End of options bar -->
         <div id="visual" class="visualPanel">
-            <div>
+            <div class="optionBtns">
                 <button id="forSketcher" class="btn onleft">Sketch panel</button>
                 <button id="forModeler" class="btn onleft btn-inactive">Forge model and documentation</button>
                 <button id="forVisualization" class="btn onleft btn-inactive">Visualisation</button>
             </div>
-            <div id="sketchViewer"></div>
+            <div id="sketchViewer">
+                <div id="info">Description</div>
+            </div>
             <div id="forgeViewer">
                 <div>
                     <pre id="outputlog" style="height: calc(100vh - 120px); overflow-y: scroll;"></pre>
@@ -102,5 +122,6 @@
     <!-- end of info window-->
     <script src="js/Sketcher.js"></script>
     <script src="js/ContextualMenu.js"></script>
+    <script src="js/LineProperties.js"></script>
 </body>
 </html>

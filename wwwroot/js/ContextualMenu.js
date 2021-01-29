@@ -39,6 +39,7 @@ function stopDrawing() {
     updatePosition(0, 0, 0);
     updatePosition(0, 0, 3);
     settingSwitches();
+    document.getElementById('info').style.display = 'none';
 }
 
 $('#closeLines').click(function () {
