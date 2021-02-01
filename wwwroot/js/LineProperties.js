@@ -23,7 +23,7 @@ function lineOrj() {
     var deltaX = Math.abs(x1 - x2);
     var deltaY = Math.abs(y1 - y2);
 
-    if (deltaY <0.0001) {
+    if (deltaY < 0.0001) {
         return 'hor'
     }
     if (deltaX < 0.0001) {
@@ -32,45 +32,29 @@ function lineOrj() {
     return 'incl';
 }
 
-document.getElementById('pasteStartPoint1').onclick = function (event) {
-    // da li je horizontalan
-    if (lineOrj() == 'hor') {
-        // ako je horizontalan menjaj samo Y koordinate
-        pickedObject.geometry.attributes.position.array[1] = clipboardCoord.y;
-        pickedObject.geometry.attributes.position.array[4] = clipboardCoord.y;
-    }
-    if (lineOrj() == 'ver') {
-        // ako je vertikalan menjaj samo X koordinate
-        pickedObject.geometry.attributes.position.array[0] = clipboardCoord.x;
-        pickedObject.geometry.attributes.position.array[3] = clipboardCoord.x;
-    }
-    if (lineOrj() == 'incl') {
-        // samo tačku jedan menjaj
-        pickedObject.geometry.attributes.position.array[0] = clipboardCoord.x;
-        pickedObject.geometry.attributes.position.array[1] = clipboardCoord.y;
-    }
-    pickedObject.geometry.attributes.position.needsUpdate = true;
-    render();
-    // simulate esc pressed
-    escPressed();
+document.getElementById('extendStartPoint1').onclick = function (event) {
+    extendOnXY(0, 1)
 }
 
-document.getElementById('pasteStartPoint2').onclick = function (event) {
+document.getElementById('extendStartPoint2').onclick = function (event) {
+    extendOnXY(3, 4)
+}
+
+function extendOnXY(pos1, pos2) {
     // da li je horizontalan
     if (lineOrj() == 'hor') {
         // ako je horizontalan menjaj samo Y koordinate
-        pickedObject.geometry.attributes.position.array[1] = clipboardCoord.y;
-        pickedObject.geometry.attributes.position.array[4] = clipboardCoord.y;
+        pickedObject.geometry.attributes.position.array[pos1] = clipboardCoord.x;
     }
     if (lineOrj() == 'ver') {
         // ako je vertikalan menjaj samo X koordinate
-        pickedObject.geometry.attributes.position.array[0] = clipboardCoord.x;
-        pickedObject.geometry.attributes.position.array[3] = clipboardCoord.x;
+        pickedObject.geometry.attributes.position.array[pos2] = clipboardCoord.y;
     }
     if (lineOrj() == 'incl') {
-        // samo tačku jedan menjaj
-        pickedObject.geometry.attributes.position.array[3] = clipboardCoord.x;
-        pickedObject.geometry.attributes.position.array[4] = clipboardCoord.y;
+        // ovo noje dobro jer mora duž linije da se produžava
+        // TODO - rešiti ovo u budućnosti
+        pickedObject.geometry.attributes.position.array[pos1] = clipboardCoord.x;
+        pickedObject.geometry.attributes.position.array[pos2] = clipboardCoord.y;
     }
     pickedObject.geometry.attributes.position.needsUpdate = true;
     render();
@@ -79,13 +63,47 @@ document.getElementById('pasteStartPoint2').onclick = function (event) {
 }
 
 document.getElementById('copyStartPoint1').onclick = function (event) {
-    clipboardCoord.x = pickedObject.geometry.attributes.position.array[0];
-    clipboardCoord.y = pickedObject.geometry.attributes.position.array[1];
+    grabXY(0, 1);
 }
 
 document.getElementById('copyStartPoint2').onclick = function (event) {
-    clipboardCoord.x = pickedObject.geometry.attributes.position.array[3];
-    clipboardCoord.y = pickedObject.geometry.attributes.position.array[4];
+    grabXY(3, 4);
+}
+
+function grabXY(pos1, pos2) {
+    clipboardCoord.x = pickedObject.geometry.attributes.position.array[pos1];
+    clipboardCoord.y = pickedObject.geometry.attributes.position.array[pos2];
+}
+
+document.getElementById('pasteStartPoint1').onclick = function (event) {
+    alignOnXorY();
+}
+
+document.getElementById('pasteStartPoint2').onclick = function (event) {
+    alignOnXorY();
+}
+
+function alignOnXorY() {
+    // da li je horizontalan
+    if (lineOrj() == 'hor') {
+        // ako je horizontalan menjaj samo Y koordinate
+        pickedObject.geometry.attributes.position.array[1] = clipboardCoord.y;
+        pickedObject.geometry.attributes.position.array[4] = clipboardCoord.y;
+    }
+    if (lineOrj() == 'ver') {
+        // ako je vertikalan menjaj samo X koordinate
+        pickedObject.geometry.attributes.position.array[0] = clipboardCoord.x;
+        pickedObject.geometry.attributes.position.array[3] = clipboardCoord.x;
+    }
+    if (lineOrj() == 'incl') {
+        // samo tačku jedan menjaj
+        pickedObject.geometry.attributes.position.array[0] = clipboardCoord.x;
+        pickedObject.geometry.attributes.position.array[1] = clipboardCoord.y;
+    }
+    pickedObject.geometry.attributes.position.needsUpdate = true;
+    render();
+    // simulate esc pressed
+    escPressed();
 }
 
 function populateLineCoords() {
@@ -136,10 +154,6 @@ function updateCoordinates(whichEnd) {
     render();
     // simulate esc pressed
     escPressed();
-}
-
-function updateAllCoordinates() {
-
 }
 
 function fillFirstCoord(x, y) {
