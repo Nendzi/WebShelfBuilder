@@ -1,18 +1,12 @@
 ﻿$(document).ready(function () {
     prepareLists();
-
-    $('#clearAccount').click(clearAccount);
-    $('#defineActivityShow').click(defineActivityModal);
-    $('#createAppBundleActivity').click(createAppBundleActivity);
-    $('#startWorkitem').click(startWorkitem);
-
     startConnection();
+    $('#loginAndSettings').click(loginAndEngineSetup);
+    //createAppBundleActivity();
 });
 
 function prepareLists() {
-    list('activity', '/api/forge/designautomation/activities');
     list('engines', '/api/forge/designautomation/engines');
-    list('localBundles', '/api/appbundles');
 }
 
 function list(control, endpoint) {
@@ -23,51 +17,79 @@ function list(control, endpoint) {
             if (list.length === 0)
                 $('#' + control).append($('<option>', { disabled: true, text: 'Nothing found' }));
             else
-                list.forEach(function (item) { $('#' + control).append($('<option>', { value: item, text: item })); })
+                list.forEach(function (item) {
+                    var test = item.toLowerCase();
+                    if (test.includes('inventor+20')) {
+                        $('#' + control).append($('<option>', { value: item, text: convertItemToText(item) }));
+                    }
+                })
         }
     });
 }
 
-function clearAccount() {
-    if (!confirm('Clear existing activities & appbundles before start. ' +
-        'This is useful if you believe there are wrong settings on your account.' +
-        '\n\nYou cannot undo this operation. Proceed?')) return;
+function convertItemToText(item) {
+    var text;
+    switch (item)
+    {
+        case 'Autodesk.Inventor+2018':
+            text = '2018';
+            break;
+        case 'Autodesk.Inventor+2019':
+            text = '2019';
+            break;
+        case 'Autodesk.Inventor+2020':
+            text = '2020';
+            break;
+        case 'Autodesk.Inventor+2021':
+            text = '2021';
+            break;
+        case 'Autodesk.Inventor+2022beta':
+            text = '2022 beta';
+            break;
+        default:
+            text = '2021';
+            break;
+    }
+    return text;
+}
 
-    jQuery.ajax({
-        url: 'api/forge/designautomation/account',
-        method: 'DELETE',
+function loginAndEngineSetup() {
+    var wndElem = document.getElementById('loginSetupWnd');
+    wndElem.style.display = 'block';
+    $.post({
+        url: 'api/forge/oauth/cred',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            ForgeClient: document.getElementById('forgeClientId').value,
+            ForgeSecret: document.getElementById('forgeClientSecret').value
+        }),
         success: function () {
-            prepareLists();
-            writeLog('Account cleared, all appbundles & activities deleted');
+            var wndElem = document.getElementById('loginSetupWnd');
+            wndElem.style.display = 'none';
+            createAppBundleActivity();
         }
     });
-}
-
-function defineActivityModal() {
-    $("#defineActivityModal").modal();
 }
 
 function createAppBundleActivity() {
     startConnection(function () {
-        writeLog("Defining appbundle and activity for " + $('#engines').val());
-        $("#defineActivityModal").modal('toggle');
-        createAppBundle(function () {
-            createActivity(function () {
-                prepareLists();
-            })
+        writeLog("Defining appbundle and activity for Inventor");
+        createActivity(function () {
+            createAppBundle()
         });
     });
 }
 
 function createAppBundle(cb) {
+    writeLog("Create Bundle");
     jQuery.ajax({
         url: 'api/forge/designautomation/appbundles',
         method: 'POST',
-        contentType: 'application/json',
+        contentType: 'application/json'/*,
         data: JSON.stringify({
-            zipFileName: $('#localBundles').val(),
-            engine: $('#engines').val()
-        }),
+            zipFileName: 'DA4ShelfBuilderPlugin.bundle.zip',
+            engine: document.getElementById('engines').value})*/
+        ,
         success: function (res) {
             writeLog('AppBundle: ' + res.appBundle + ', v' + res.version);
             if (cb) cb();
@@ -76,13 +98,14 @@ function createAppBundle(cb) {
 }
 
 function createActivity(cb) {
+    writeLog("Create Activity");
     jQuery.ajax({
         url: 'api/forge/designautomation/activities',
         method: 'POST',
         contentType: 'application/json',
         data: JSON.stringify({
-            zipFileName: $('#localBundles').val(),
-            engine: $('#engines').val()
+            //zipFileName: 'MyWallShelf.zip',
+            engine: document.getElementById('engines').value
         }),
         success: function (res) {
             writeLog('Activity: ' + res.activity);
@@ -92,17 +115,18 @@ function createActivity(cb) {
 }
 
 function startWorkitem() {
-    var inputFileField = document.getElementById('inputFile');
-    if (inputFileField.files.length === 0) { alert('Please select an input file'); return; }
-    if ($('#activity').val() === null) { alert('Please select an activity'); return };
-    var file = inputFileField.files[0];
+    // TODO - this piece of code will be used for sending image in visualization module
+    //var inputFileField = document.getElementById('inputFile');
+    //if (inputFileField.files.length === 0) { alert('Please select an input file'); return; }
+    //if ($('#activity').val() === null) { alert('Please select an activity'); return };
+    //var file = inputFileField.files[0];
+
     startConnection(function () {
         var formData = new FormData();
-        formData.append('inputFile', file);
-        formData.append('data', JSON.stringify({
-            width: $('#width').val(),
-            height: $('#height').val(),
-            activityName: $('#activity').val(),
+        var myJSONString = JSON.stringify(myShelf);
+        formData.append('shelfData', myJSONString);
+        formData.append('forgeData', JSON.stringify({
+            activityName: 'shelfconfig',
             browerConnectionId: connectionId
         }));
         writeLog('Uploading input file...');

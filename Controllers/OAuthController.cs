@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebShelfBuilder.Models;
 
 namespace WebShelfBuilder.Controllers
 {
@@ -13,6 +14,21 @@ namespace WebShelfBuilder.Controllers
     {
         private static dynamic InternalToken { get; set; }
         private static dynamic PublicToken { get; set; }
+        //depo for Forge_Client_ID and secret
+        internal static string FORGE_CLIENT_ID { get; set; }
+        internal static string FORGE_CLIENT_SECRET { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userModel"></param>
+        [HttpPost]
+        [Route("api/forge/oauth/cred")]
+        public void SetCredentials([FromBody] UserModel userModel)
+        {
+            FORGE_CLIENT_ID = userModel.ForgeClient;
+            FORGE_CLIENT_SECRET = userModel.ForgeSecret;
+        }
 
         /// <summary>
         /// Get access token with public (viewables:read) scope

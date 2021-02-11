@@ -66,6 +66,11 @@ li {
     display: inline-block;
 }
 
+.inputNumbers {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
 .startPoint, .endPoint {
     width: 215px;
     display: inline-block;
@@ -113,6 +118,10 @@ li {
     float: left;
 }
 
+.onright {
+    float: right;
+}
+
 .btn-inactive {
     background-color: beige;
     color: darkblue;
@@ -133,13 +142,17 @@ li {
     left: 0px;
     width: 45px;
     text-align: center;
-    z-index: 100;
+    z-index: 10;
     display: none;
 }
 
 #forgeViewer {
     display: none;
     width: 100%;
+}
+
+.shelfData {
+    margin-top: 5px;
 }
 
 #showroomViewer {
@@ -152,7 +165,7 @@ span {
 }
 
 .custom-cm {
-    background-color: #ffffff;
+    background-color: beige;
     border: 1px solid #c3c3c3;
     box-shadow: 1px 10px 10px rgba(0,0,0,0.2);
     padding: 10px 0;
@@ -161,15 +174,16 @@ span {
     left: 100px;
     width: 200px;
     display: none;
+    z-index: 20;
 }
 
 .custom-cm-item {
-    cursor: pointer;
     padding: 8px 15px;
 }
 
     .custom-cm-item:hover {
-        background-color: #f8f8f8;
+        cursor: pointer;
+        background-color: #9b8968;
     }
 
 .custom-cm-divider {
@@ -200,4 +214,32 @@ span {
     color: white;
     font-size: 18px;
     float: right;
+}
+
+.loginWindow{
+    display:none;
+    position:absolute;
+    left:50px;
+    top:300px;
+}
+
+#loginAndSettings {
+    margin: 0 auto;
+    padding: 4px 12px;
+    background-color: #9b8968;
+    color: darkblue;
+    border-left: 1px solid #9b8968;
+    border-right: 1px solid #9b8968;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+.inputCred {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    width: 270px;
+}
+
+.logInLabel { 
+    width: 170px;
 }

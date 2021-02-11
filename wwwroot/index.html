@@ -3,8 +3,8 @@
 <head>
     <title>TeamCAD - Shelf Builder</title>
     <meta charset="utf-8" />
-    <link href="/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600&display=swap" rel="stylesheet">
     <!--Common packages: jQuery, jsTree-->
@@ -17,10 +17,14 @@
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
     <!--this project files-->
     <link href="/css/main.css" rel="stylesheet" />
+    <link href="../css/CustomDropbox.css" rel="stylesheet">
     <script src="/js/ForgeTree.js"></script>
     <script src="/js/ForgeViewer.js"></script>
     <script src="/js/ForgeDesignAutomation.js"></script>
     <script src="/js/three.js"></script>
+    <script src="/js/WorkingAreaSelector.js"></script>
+    <script src="/js/PreparingDataForForging.js"></script>
+    <script src="/js/UserLogin.js"></script>
 </head>
 
 <body>
@@ -35,7 +39,7 @@
                         </a>
                     </li>
                     <li class="settingIcon">
-                        <img alt="Settings" src="https://img.icons8.com/nolan/64/settings--v1.png" />
+                        <img id="loginSetup" alt="Settings" src="https://img.icons8.com/nolan/64/settings--v1.png" />
                     </li>
                 </ul>
             </div>
@@ -43,7 +47,7 @@
                 Buckets &amp; Objects
                 <span id="refreshBuckets" class="glyphicon glyphicon-refresh" style="cursor: pointer"></span>
                 <button class="btn" id="showFormCreateBucket" data-toggle="modal" data-target="#createBucketModal">
-                    <span class="glyphicon glyphicon-folder-close"></span> New bucket
+                    <span class="glyphicon glyphicon-folder-close"></span> Create bucket
                 </button>
             </div>
             <div class="panelBucket" id="appBuckets">
@@ -53,9 +57,9 @@
                 <div>
                     <div class="startPoint">
                         <label for="fpx">Start point X:</label>
-                        <input type="number" id="firstPoint_x" name="fpx" min="100" max="2500" required><br>
+                        <input class="inputNumbers" type="number" id="firstPoint_x" name="fpx" min="100" max="2500" required><br>
                         <label for="fpy">Start point Y:</label>
-                        <input type="number" id="firstPoint_y" name="fpy" min="100" max="2500" required>
+                        <input class="inputNumbers" type="number" id="firstPoint_y" name="fpy" min="100" max="2500" required>
                     </div>
                     <button id="updateLength1" class="btn btn-massive">Update Length</button>
                     <button id="extendStartPoint1" class="btn btn-massive">Extend</button>
@@ -65,9 +69,9 @@
                 <div>
                     <div class="endPoint">
                         <label for="epx">End point X:</label>
-                        <input type="number" id="lastPoint_x" name="epx" min="100" max="2500" required><br>
+                        <input class="inputNumbers" type="number" id="lastPoint_x" name="epx" min="100" max="2500" required><br>
                         <label for="epy">End point Y:</label>
-                        <input type="number" id="lastPoint_y" name="epy" min="100" max="2500" required>
+                        <input class="inputNumbers" type="number" id="lastPoint_y" name="epy" min="100" max="2500" required>
                     </div>
                     <button id="updateLength2" class="btn btn-massive">Update Length</button>
                     <button id="extendStartPoint2" class="btn btn-massive">Extend</button>
@@ -75,7 +79,7 @@
                     <button id="copyStartPoint2" class="btn btn-massive">Grab</button>
                 </div>
                 <label for="lght">Line length:</label>
-                <input type="number" id="lineLen" name="lght" min="100" max="2500" required>                
+                <input type="number" id="lineLen" name="lght" min="100" max="2500" required>
             </div>
         </div>
         <!-- End of options bar -->
@@ -86,9 +90,28 @@
                 <button id="forVisualization" class="btn onleft btn-inactive">Visualisation</button>
             </div>
             <div id="sketchViewer">
+                <!-- Info is placeholder for dimension or line length display-->
                 <div id="info">Description</div>
             </div>
             <div id="forgeViewer">
+                <div class="shelfData">
+                    <label for="depth">Shelf depth</label>
+                    <input id="shelfDepth" class="inputNumbers" type="number" min="100" max="400" required />
+                    <label for="thkness">Shelf thickness</label>
+                    <input id="shelfThickness" class="inputNumbers" type="number" min="18" max="40" required />
+                    <div class="custom-select">
+                        <select id="selectMat">
+                            <option value="0">Select material</option>
+                            <option value="1">English Oak</option>
+                            <option value="2">Maple</option>
+                            <option value="3">Red Birch</option>
+                            <option value="4">Teak</option>
+                            <option value="5">Wild Cherry</option>
+                            <option value="6">Yellow Pine</option>
+                        </select>
+                    </div>
+                    <button id="startWorkitem" class="btn onright">Commence 3D model creation</button>
+                </div>
                 <div>
                     <pre id="outputlog" style="height: calc(100vh - 120px); overflow-y: scroll;"></pre>
                 </div>
@@ -108,6 +131,8 @@
         <div class="custom-cm-divider"></div>
         <div class="custom-cm-item" id="filterVert">Filter |</div>
         <div class="custom-cm-item" id="filterHor">Filter -</div>
+        <div class="custom-cm-item" id="pointFrom">From</div>
+        <div class="custom-cm-item" id="elementTo">To</div>
         <div class="custom-cm-divider"></div>
         <div class="custom-cm-item" id="clearCanvas">Clear all</div>
     </div>
@@ -120,8 +145,30 @@
         <p> Close command can be used only on three and more lines.</p>
     </div>
     <!-- end of info window-->
+    <!-- Login window -->
+    <div class="loginWindow" id="loginSetupWnd">
+        <div>
+            <label for="clientID" class="logInLabel">Forge Client ID</label>
+            <input id="forgeClientId" class="inputCred" type="text" required />
+        </div>
+        <div>
+            <label for="clientSecret" class="logInLabel">Forge Client Secret</label>
+            <input id="forgeClientSecret" class="inputCred" type="password" required />
+        </div>
+        <div>
+            <label for="enginesInventor" class="logInLabel">Avaiable Inventor versions</label>
+            <select id="engines">
+
+            </select>
+        </div>
+        <div>
+            <button id="loginAndSettings">Login and setup engine</button>
+        </div>
+    </div>
+    <!-- End of login window -->
     <script src="js/Sketcher.js"></script>
     <script src="js/ContextualMenu.js"></script>
     <script src="js/LineProperties.js"></script>
+    <script src="/js/CustomDropbox.js"></script>
 </body>
 </html>

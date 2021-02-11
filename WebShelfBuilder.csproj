@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\bundles\" />
+    <Folder Include="wwwroot\inputFiles\" />
   </ItemGroup>
 
 </Project>

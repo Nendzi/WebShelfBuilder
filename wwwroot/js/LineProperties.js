@@ -11,14 +11,14 @@ document.getElementById('updateLength2').onclick = function (event) {
     updateCoordinates('second');
 }
 
-function lineOrj() {
+function lineOrj(line) {
     var output = false;
     populateLineCoords();
 
-    var x1 = lineCoordinates.x1;
-    var y1 = lineCoordinates.y1;
-    var x2 = lineCoordinates.x2;
-    var y2 = lineCoordinates.y2;
+    var x1 = line.x1;
+    var y1 = line.y1;
+    var x2 = line.x2;
+    var y2 = line.y2;
 
     var deltaX = Math.abs(x1 - x2);
     var deltaY = Math.abs(y1 - y2);
@@ -42,15 +42,15 @@ document.getElementById('extendStartPoint2').onclick = function (event) {
 
 function extendOnXY(pos1, pos2) {
     // da li je horizontalan
-    if (lineOrj() == 'hor') {
+    if (lineOrj(lineCoordinates) == 'hor') {
         // ako je horizontalan menjaj samo Y koordinate
         pickedObject.geometry.attributes.position.array[pos1] = clipboardCoord.x;
     }
-    if (lineOrj() == 'ver') {
+    if (lineOrj(lineCoordinates) == 'ver') {
         // ako je vertikalan menjaj samo X koordinate
         pickedObject.geometry.attributes.position.array[pos2] = clipboardCoord.y;
     }
-    if (lineOrj() == 'incl') {
+    if (lineOrj(lineCoordinates) == 'incl') {
         // ovo noje dobro jer mora duž linije da se produžava
         // TODO - rešiti ovo u budućnosti
         pickedObject.geometry.attributes.position.array[pos1] = clipboardCoord.x;
@@ -85,17 +85,17 @@ document.getElementById('pasteStartPoint2').onclick = function (event) {
 
 function alignOnXorY() {
     // da li je horizontalan
-    if (lineOrj() == 'hor') {
+    if (lineOrj(lineCoordinates) == 'hor') {
         // ako je horizontalan menjaj samo Y koordinate
         pickedObject.geometry.attributes.position.array[1] = clipboardCoord.y;
         pickedObject.geometry.attributes.position.array[4] = clipboardCoord.y;
     }
-    if (lineOrj() == 'ver') {
+    if (lineOrj(lineCoordinates) == 'ver') {
         // ako je vertikalan menjaj samo X koordinate
         pickedObject.geometry.attributes.position.array[0] = clipboardCoord.x;
         pickedObject.geometry.attributes.position.array[3] = clipboardCoord.x;
     }
-    if (lineOrj() == 'incl') {
+    if (lineOrj(lineCoordinates) == 'incl') {
         // samo tačku jedan menjaj
         pickedObject.geometry.attributes.position.array[0] = clipboardCoord.x;
         pickedObject.geometry.attributes.position.array[1] = clipboardCoord.y;

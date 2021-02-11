@@ -102,3 +102,22 @@ function getHorizontalCoordinate() {
     horFilterOn = true;
     selectionMode = true;
 }
+
+$('#pointFrom').click(getPoint);
+
+function getPoint() {
+    anyFilterOn = true;
+    horFilterOn = true;
+    verFilterOn = true;
+    selectionMode = true;
+}
+
+$('#elementTo').click(toElement);
+
+function toElement() {
+    anyFilterOn = true;
+    makeTouch = true;
+    selectionMode = true;
+    verFilterOn = false;
+    horFilterOn = false;
+}

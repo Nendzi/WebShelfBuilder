@@ -27,6 +27,7 @@ var keepSelected;
 var anyFilterOn;
 var horFilterOn;
 var verFilterOn;
+var makeTouch;
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -109,6 +110,7 @@ function initVars() {
     anyFilterOn = false;
     horFilterOn = false;
     verFilterOn = false;
+    makeTouch = false;
 
     pickedObject = null;
 }
@@ -249,8 +251,44 @@ document.getElementById('sketchViewer').onclick = function (event) {
         return;
     }
 
+    if (pickedObject && makeTouch) {
+        x_coord = cursor_x;
+        y_coord = cursor_y;
+        var firstX = pickedObject.geometry.attributes.position.array[0];
+        var secondX = pickedObject.geometry.attributes.position.array[3];
+        var firstY = pickedObject.geometry.attributes.position.array[1];
+        var secondY = pickedObject.geometry.attributes.position.array[4];
+        // if touched line horizontal get y coordinate
+        if (firstY == secondY) {
+            y_coord = firstY;
+        }
+        // if touched line vertical get x coordinate
+        if (firstX == secondX) {
+            x_coord = firstX;
+        }
+        makeTouch = false;
+        anyFilterOn = false;
+
+        // set first point for line preview
+        updatePosition(x_coord, y_coord, 0);
+        // set point for line. Which point will be depends of array points
+        points.push(new THREE.Vector3(x_coord, y_coord, 0));
+        //it is time for drawing line
+        createLine();
+        settingSwitches();
+        // u ovom momentu sačuvaj koordinate tačke koja je stvarno izračunata i na osnovu kojih je napravljena nova linija
+        cursor_x = x_coord;
+        cursor_y = y_coord;
+        // similate esc pressed
+        escPressed();
+        // job is done, go out.
+        return;
+    }
+
     // check if app is in filter coordinates mode
     if (pickedObject && anyFilterOn) {
+        x_coord = cursor_x;
+        y_coord = cursor_y;
         if (verFilterOn) {
             var mouse_x = event.offsetX - windowWidth / 2;
             var mouse_y = event.offsetY - windowHeight / 2;
@@ -264,9 +302,10 @@ document.getElementById('sketchViewer').onclick = function (event) {
                 // secondX should be selected
                 x_coord = secondX;
             }
-            y_coord = cursor_y;
         }
         if (horFilterOn) {
+            var mouse_x = event.offsetX - windowWidth / 2;
+            var mouse_y = event.offsetY - windowHeight / 2;
             var firstY = pickedObject.geometry.attributes.position.array[1];
             var secondY = pickedObject.geometry.attributes.position.array[4];
             if (distance(firstY, mouse_y) < distance(secondY, mouse_y)) {
@@ -277,7 +316,10 @@ document.getElementById('sketchViewer').onclick = function (event) {
                 // secondX should be selected
                 y_coord = secondY;
             }
-            x_coord = cursor_x;
+        }
+        //
+        if (horFilterOn && verFilterOn) {
+            isItFirstCatch = false;
         }
         // reset all setted flags
         anyFilterOn = false;

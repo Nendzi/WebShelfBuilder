@@ -1,5 +1,10 @@
 ﻿var viewer;
 
+$(document).ready(function () {
+    $('#startWorkitem').click(prepareWorkitem);
+
+});
+
 function launchViewer(urn) {
     var options = {
         env: 'AutodeskProduction',
@@ -9,7 +14,7 @@ function launchViewer(urn) {
     // TODO - set light theme
 
     Autodesk.Viewing.Initializer(options, () => {
-        viewer = new Autodesk.Viewing.GuiViewer3D(document.getElementById('forgeViewer'), { extensions: ['Autodesk.DocumentBrowser'] });
+        viewer = new Autodesk.Viewing.GuiViewer3D(document.getElementById('showroomViewer'), { extensions: ['Autodesk.DocumentBrowser'] });
         viewer.start();
         var documentId = 'urn:' + urn;
         Autodesk.Viewing.Document.load(documentId, onDocumentLoadSuccess, onDocumentLoadFailure);
@@ -19,7 +24,7 @@ function launchViewer(urn) {
 function onDocumentLoadSuccess(doc) {
     var viewables = doc.getRoot().getDefaultGeometry();
     viewer.loadDocumentNode(doc, viewables).then(i => {
-        // documented loaded, any action?
+        // documented loaded, user can upload background image for visalization
     });
 }
 
@@ -33,4 +38,10 @@ function getForgeToken(callback) {
             callback(data.access_token, data.expires_in);
         });
     });
+}
+
+function prepareWorkitem() {
+
+    lineDataToJSON();
+    startWorkitem();
 }

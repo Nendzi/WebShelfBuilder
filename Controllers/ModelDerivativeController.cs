@@ -32,7 +32,7 @@ namespace WebShelfBuilder.Controllers
                 })
             };
             JobPayload job;
-            job = new JobPayload(new JobPayloadInput(objModel.ObjectName), new JobPayloadOutput(outputs));
+            job = new JobPayload(new JobPayloadInput(objModel.ObjectName, true, "MyWallShelf.iam"), new JobPayloadOutput(outputs));
 
             // start the translation
             DerivativesApi derivative = new DerivativesApi();

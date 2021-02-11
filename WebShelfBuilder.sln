@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebShelfBuilder", "WebShelfBuilder.csproj", "{BBF410C1-65C8-4D70-BA1B-EDFE85306EB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebShelfBuilder", "WebShelfBuilder.csproj", "{BBF410C1-65C8-4D70-BA1B-EDFE85306EB8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DA4ShelfBuilderPlugin", "..\DA4ShelfBuilder\DA4ShelfBuilderPlugin\DA4ShelfBuilderPlugin.csproj", "{24B6B964-AC08-4A6F-9D95-FE3926933D01}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DA4ShelfBuilderPlugin", "..\..\Autodesk projects\InventorAddIns\DA4ShelfBuilder\DA4ShelfBuilderPlugin\DA4ShelfBuilderPlugin.csproj", "{24B6B964-AC08-4A6F-9D95-FE3926933D01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

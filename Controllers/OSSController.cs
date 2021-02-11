@@ -3,6 +3,7 @@ using Autodesk.Forge.Model;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -15,7 +16,9 @@ namespace WebShelfBuilder.Controllers
         private IWebHostEnvironment _env;
         public OSSController(IWebHostEnvironment env) { _env = env; }
         public string ClientId { get { return OAuthController.GetAppSetting("FORGE_CLIENT_ID").ToLower(); } }
-
+        // BucketName
+        public string BucketName { get { return "wallshelfconfig"; } }
+        // server region for bucket, can be EMEA also
         private string bucketRegion = "US";
 
         /// <summary>
@@ -39,7 +42,12 @@ namespace WebShelfBuilder.Controllers
                 dynamic buckets = await appBckets.GetBucketsAsync(bucketRegion, 100);
                 foreach (KeyValuePair<string, dynamic> bucket in new DynamicDictionaryItems(buckets.items))
                 {
-                    nodes.Add(new TreeNode(bucket.Value.bucketKey, bucket.Value.bucketKey.Replace(ClientId + "-", string.Empty), "bucket", true));
+                    string bucketIdent = bucket.Value.bucketKey;
+                    bucketIdent.ToLower();
+                    if (bucketIdent.Contains("wallshelfconfig"))
+                    {
+                        nodes.Add(new TreeNode(bucket.Value.bucketKey, bucket.Value.bucketKey.Replace(ClientId + "-", string.Empty), "bucket", true));
+                    }
                 }
             }
             else
@@ -50,8 +58,14 @@ namespace WebShelfBuilder.Controllers
                 var objectsList = await objects.GetObjectsAsync(id, 100);
                 foreach (KeyValuePair<string, dynamic> objInfo in new DynamicDictionaryItems(objectsList.items))
                 {
-                    nodes.Add(new TreeNode(Base64Encode((string)objInfo.Value.objectId),
-                      objInfo.Value.objectKey, "object", false));
+                    string fileName = objInfo.Value.objectKey;
+                    fileName.ToLower();
+                    if (fileName.Contains("zip") && fileName.Contains("output"))
+                    {
+                        nodes.Add(new TreeNode(Base64Encode((string)objInfo.Value.objectId),
+                      objInfo.Value.objectKey, "zipfile", false));
+                    }
+                    //nodes.Add(new TreeNode(Base64Encode((string)objInfo.Value.objectId), objInfo.Value.objectKey, "object", false));
                 }
             }
             return nodes;
@@ -81,20 +95,56 @@ namespace WebShelfBuilder.Controllers
         /// </summary>
         [HttpPost]
         [Route("api/forge/oss/buckets")]
-        public async Task<dynamic> CreateBucket([FromBody] CreateBucketModel bucket)
+        public async Task<dynamic> CreateBucket([FromBody] BucketModel bucket)
         {
+            dynamic NewBucket = null;
             BucketsApi buckets = new BucketsApi();
             dynamic token = await OAuthController.GetInternalAsync();
             buckets.Configuration.AccessToken = token.access_token;
             PostBucketsPayload bucketPayload = new PostBucketsPayload(string.Format("{0}-{1}", ClientId, bucket.bucketKey.ToLower()), null,
               PostBucketsPayload.PolicyKeyEnum.Transient);
-            return await buckets.CreateBucketAsync(bucketPayload, bucketRegion);
+
+            try
+            {
+                NewBucket= await buckets.CreateBucketAsync(bucketPayload, bucketRegion);
+            }
+            catch (Exception e)
+            {
+                if (e.Message == "Error calling CreateBucket: {\"reason\":\"Bucket already exists\"}")
+                {
+                    dynamic allBuckets = await buckets.GetBucketsAsync("US", 100);
+                    foreach (KeyValuePair<string, dynamic> actualBucket in new DynamicDictionaryItems(allBuckets.items))
+                    {
+                        string bucketName = actualBucket.Value.bucketKey;
+                        if (bucketName.Contains(BucketName)) //kitchenconfig  designautomation
+                        {
+                            NewBucket = actualBucket;
+                        }
+                    }
+                }
+            }
+
+            return NewBucket;
         }
+
+        /* for this version deleting of bucket is forbiden
+        /// <summary>
+        /// Delete bucket
+        /// </summary>
+        [HttpDelete]
+        [Route("api/forge/oss/buckets")]
+        public async Task DeleteBucket([FromBody] BucketModel bucketModel)
+        {
+            BucketsApi bucket = new BucketsApi();
+            dynamic token = OAuthController.GetInternalAsync();
+            bucket.Configuration.AccessToken = token.access_token;
+            await bucket.DeleteBucketAsync(bucketModel.bucketKey);
+        }*/
 
         /// <summary>
         /// Input model for CreateBucket method
         /// </summary>
-        public class CreateBucketModel
+        public class BucketModel
         {
             public string bucketKey { get; set; }
         }
@@ -133,6 +183,17 @@ namespace WebShelfBuilder.Controllers
             return uploadedObj;
         }
 
+        [HttpDelete]
+        [Route("api/forge/oss/objects/delete")]
+        public async Task DeleteObject([FromBody] ObjectModel objectModel)
+        {
+            dynamic oauth = await OAuthController.GetInternalAsync();
+            ObjectsApi objectForDelete = new ObjectsApi();
+            objectForDelete.Configuration.AccessToken = oauth.access_token;
+
+            await objectForDelete.DeleteObjectAsync(objectModel.bucketKey, objectModel.objectKey);
+        }
+
         /// <summary>
         /// Base64 enconde a string
         /// </summary>
@@ -146,6 +207,12 @@ namespace WebShelfBuilder.Controllers
         {
             public string BucketKey { get; set; }
             public IFormFile FileToUpload { get; set; }
+        }
+
+        public class ObjectModel
+        {
+            public string bucketKey { get; set; }
+            public string objectKey { get; set; }
         }
     }
 }
