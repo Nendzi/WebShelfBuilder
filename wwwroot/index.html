@@ -10,6 +10,11 @@
     <!--Common packages: jQuery, jsTree-->
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/jstree.min.js"></script>
+    <!-- Bootstrap packages -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css">
+    <!-- THREE js package
+    <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.js"></script>-->
     <!--.NET SignalR-->
     <script src="//unpkg.com/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
     <!--Autodesk Forge Viewer files-->
@@ -17,10 +22,11 @@
     <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
     <!--this project files-->
     <link href="/css/main.css" rel="stylesheet" />
-    <link href="../css/CustomDropbox.css" rel="stylesheet">
+    <link href="/css/CustomDropbox.css" rel="stylesheet">
     <script src="/js/ForgeTree.js"></script>
     <script src="/js/ForgeViewer.js"></script>
     <script src="/js/ForgeDesignAutomation.js"></script>
+    <!-- Local THREE js -->
     <script src="/js/three.js"></script>
     <script src="/js/WorkingAreaSelector.js"></script>
     <script src="/js/PreparingDataForForging.js"></script>
@@ -46,13 +52,21 @@
             <div class="panelHeading">
                 Buckets &amp; Objects
                 <span id="refreshBuckets" class="glyphicon glyphicon-refresh" style="cursor: pointer"></span>
-                <button class="btn" id="showFormCreateBucket" data-toggle="modal" data-target="#createBucketModal">
+                <button class="bttn" id="showFormCreateBucket" data-toggle="modal" data-target="#createBucketModal">
                     <span class="glyphicon glyphicon-folder-close"></span> Create bucket
                 </button>
             </div>
             <div class="panelBucket" id="appBuckets">
                 tree here
             </div>
+            <div class="infotextConteiner">
+                <div class="infotext">3D model</div>
+                <div class="stadium">
+                    <div class="disc" id="discID"></div>
+                </div>
+                <div class="infotext">Drawings</div>
+            </div>
+            <div id="responseMessage" class="dwnld"></div>
             <div class="lineProperties" id="lineProp">
                 <div>
                     <div class="startPoint">
@@ -61,10 +75,10 @@
                         <label for="fpy">Start point Y:</label>
                         <input class="inputNumbers" type="number" id="firstPoint_y" name="fpy" min="100" max="2500" required>
                     </div>
-                    <button id="updateLength1" class="btn btn-massive">Update Length</button>
-                    <button id="extendStartPoint1" class="btn btn-massive">Extend</button>
-                    <button id="pasteStartPoint1" class="btn btn-massive">Move</button>
-                    <button id="copyStartPoint1" class="btn btn-massive">Grab</button>
+                    <button id="updateLength1" class="bttn bttn-massive">Update Length</button>
+                    <button id="extendStartPoint1" class="bttn bttn-massive">Extend</button>
+                    <button id="pasteStartPoint1" class="bttn bttn-massive">Move</button>
+                    <button id="copyStartPoint1" class="bttn bttn-massive">Grab</button>
                 </div>
                 <div>
                     <div class="endPoint">
@@ -73,21 +87,21 @@
                         <label for="epy">End point Y:</label>
                         <input class="inputNumbers" type="number" id="lastPoint_y" name="epy" min="100" max="2500" required>
                     </div>
-                    <button id="updateLength2" class="btn btn-massive">Update Length</button>
-                    <button id="extendStartPoint2" class="btn btn-massive">Extend</button>
-                    <button id="pasteStartPoint2" class="btn btn-massive">Move</button>
-                    <button id="copyStartPoint2" class="btn btn-massive">Grab</button>
+                    <button id="updateLength2" class="bttn bttn-massive">Update Length</button>
+                    <button id="extendStartPoint2" class="bttn bttn-massive">Extend</button>
+                    <button id="pasteStartPoint2" class="bttn bttn-massive">Move</button>
+                    <button id="copyStartPoint2" class="bttn bttn-massive">Grab</button>
                 </div>
                 <label for="lght">Line length:</label>
                 <input type="number" id="lineLen" name="lght" min="100" max="2500" required>
             </div>
         </div>
         <!-- End of options bar -->
-        <div id="visual" class="visualPanel">
+        <div id="visual" class="visualPanel col-sm-9">
             <div class="optionBtns">
-                <button id="forSketcher" class="btn onleft">Sketch panel</button>
-                <button id="forModeler" class="btn onleft btn-inactive">Forge model and documentation</button>
-                <button id="forVisualization" class="btn onleft btn-inactive">Visualisation</button>
+                <button id="forSketcher" class="bttn onleft">Sketch panel</button>
+                <button id="forModeler" class="bttn onleft bttn-inactive">Forge model and documentation</button>
+                <button id="forVisualization" class="bttn onleft bttn-inactive">Visualisation</button>
             </div>
             <div id="sketchViewer">
                 <!-- Info is placeholder for dimension or line length display-->
@@ -110,7 +124,7 @@
                             <option value="6">Yellow Pine</option>
                         </select>
                     </div>
-                    <button id="startWorkitem" class="btn onright">Commence 3D model creation</button>
+                    <button id="startWorkitem" class="bttn onright">Commence 3D model creation</button>
                 </div>
                 <div>
                     <pre id="outputlog" style="height: calc(100vh - 120px); overflow-y: scroll;"></pre>
@@ -156,13 +170,17 @@
             <input id="forgeClientSecret" class="inputCred" type="password" required />
         </div>
         <div>
-            <label for="enginesInventor" class="logInLabel">Avaiable Inventor versions</label>
-            <select id="engines">
-
-            </select>
+            <button id="login" class="loginBtn">Login and setup engine</button>
         </div>
-        <div>
-            <button id="loginAndSettings">Login and setup engine</button>
+        <div id="engineSelector">
+            <div>
+                <label for="enginesInventor" class="logInLabel">Avaiable Inventor versions</label>
+                <select id="engines">
+                </select>
+            </div>
+            <div>
+                <button id="engineSelect" class="loginBtn">Choose engine</button>
+            </div>
         </div>
     </div>
     <!-- End of login window -->
@@ -170,5 +188,6 @@
     <script src="js/ContextualMenu.js"></script>
     <script src="js/LineProperties.js"></script>
     <script src="/js/CustomDropbox.js"></script>
+    <script src="/js/Selector.js"></script>
 </body>
 </html>

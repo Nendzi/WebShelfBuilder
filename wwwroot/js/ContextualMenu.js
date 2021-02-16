@@ -7,7 +7,7 @@ function showContexMenu(show = true) {
     cm.style.display = show ? 'block' : 'none';
 }
 
-sketch.addEventListener('contextmenu', (event) => {
+document.getElementById('sketchViewer').addEventListener('contextmenu', (event) => {
     event.preventDefault();
 
     showContexMenu();

@@ -10,6 +10,8 @@
         createNewBucket();
     });
 
+    $('#discID').click(changeSliderPosition);
+
     $('#hiddenUploadField').change(function () {
         var node = $('#appBuckets').jstree(true).get_selected(true)[0];
         var _this = this;
@@ -54,6 +56,8 @@ function createNewBucket() {
     });
 }
 
+var fileTypeToTranslate = "zipfile3D";
+
 function prepareAppBucketTree() {
     $('#appBuckets').jstree({
         'core': {
@@ -63,7 +67,10 @@ function prepareAppBucketTree() {
                 "dataType": "json",
                 'multiple': false,
                 "data": function (node) {
-                    return { "id": node.id };
+                    return {
+                        "id": node.id,
+                        "fttp": fileTypeToTranslate
+                    };
                 }
             }
         },
@@ -77,12 +84,14 @@ function prepareAppBucketTree() {
             'bucket': {
                 'icon': 'glyphicon glyphicon-folder-open'
             },
-            'zipfile': {
-                'icon': 'glyphicon glyphicon-folder-open',
-                'valid_children': ['object']
+            'zipfile3D': {
+                'icon': 'glyphicon glyphicon-equalizer'
             },
-            'object': {
+            'zipfile2D': {
                 'icon': 'glyphicon glyphicon-file'
+            },
+            'pdfobject': {
+                'icon': 'glyphicon glyphicon-picture'
             }
         },
         "plugins": ["types", "state", "sort", "contextmenu"],
@@ -90,7 +99,8 @@ function prepareAppBucketTree() {
     }).on('loaded.jstree', function () {
         $('#appBuckets').jstree('open_all');
     }).bind("activate_node.jstree", function (evt, data) {
-        if (data != null && data.node != null && data.node.type == 'object') {
+        document.getElementById('responseMessage').innerHTML = '';
+        /*if (data != null && data.node != null && data.node.type == 'pdfobject' && fileTypeToTranslate =='zipfile2D') {
             $("#showroomViewer").empty();
             var urn = data.node.id;
             getForgeToken(function (access_token) {
@@ -103,14 +113,14 @@ function prepareAppBucketTree() {
                     },
                     error: function (err) {
                         var msgButton = 'This file is not translated yet! ' +
-                            '<button class="btn btn-xs btn-info" onclick="translateObject()"><span class="glyphicon glyphicon-eye-open"></span> ' +
+                            '<button class="btn btn-xs btn-info" onclick="translatePDFObject()"><span class="glyphicon glyphicon-eye-open"></span> ' +
                             'Start translation</button>'
                         $("#showroomViewer").html(msgButton);
                     }
                 });
             })
         }
-        else if (data != null && data.node != null && data.node.type == 'zipfile') {
+        else*/ if (data != null && data.node != null && data.node.type == fileTypeToTranslate) {
             $("#showroomViewer").empty();
             var urn = data.node.id;
             getForgeToken(function (access_token) {
@@ -155,16 +165,16 @@ function autodeskCustomMenu(autodeskNode) {
                 }*/
             };
             break;
-        case "object":
+        case "pdfobject":
             items = {
-                translateFile: {
+                /*translateFile: {
                     label: "Translate",
                     action: function () {
                         var treeNode = $('#appBuckets').jstree(true).get_selected(true)[0];
-                        translateObject(treeNode);
+                        translatePDFObject(treeNode);
                     },
                     icon: 'glyphicon glyphicon-eye-open'
-                },
+                },*/
                 deleteFile: {
                     label: "Delete",
                     action: function () {
@@ -172,10 +182,19 @@ function autodeskCustomMenu(autodeskNode) {
                         deleteFile(treeNode);
                     },
                     icon: 'glyphicon glyphicon-remove'
+                },
+                downloadFile: {
+                    label: "Download",
+                    action: function () {
+                        var treeNode = $('#appBuckets').jstree(true).get_selected(true)[0];
+                        downloadObject(treeNode);
+                    },
+                    icon: 'glyphicon glyphicon-cloud-download'
                 }
             };
             break;
-        case "zipfile":
+        case "zipfile2D":
+        case "zipfile3D":
             items = {
                 translateFile: {
                     label: "Translate",
@@ -234,7 +253,22 @@ function translateObject(node) {
     jQuery.post({
         url: '/api/forge/modelderivative/jobs',
         contentType: 'application/json',
-        data: JSON.stringify({ 'bucketKey': bucketKey, 'objectName': objectKey }),
+        data: JSON.stringify({ 'bucketKey': bucketKey, 'objectName': objectKey, 'objectType': fileTypeToTranslate }),
+        success: function (res) {
+            $("#showroomViewer").html('Translation started! Please try again in a moment.');
+        },
+    });
+}
+
+function translatePDFObject(node) {
+    $("#showroomViewer").empty();
+    if (node == null) node = $('#appBuckets').jstree(true).get_selected(true)[0];
+    var bucketKey = node.parents[0];
+    var objectKey = node.id;
+    jQuery.post({
+        url: '/api/forge/modelderivative/jobs',
+        contentType: 'application/json',
+        data: JSON.stringify({ 'bucketKey': bucketKey, 'objectName': objectKey, 'objectType': 'pdfobject' }),
         success: function (res) {
             $("#showroomViewer").html('Translation started! Please try again in a moment.');
         },
@@ -245,14 +279,16 @@ function downloadObject(node) {
     var bucketKey = node.parent;
     var objectName = node.text;
     jQuery.ajax({
-        url: '/api/forge/objects/signed', // TODO - ovo treba napisati
+        url: '/api/forge/objects/signed',
         contentType: 'application/json',
         data: JSON.stringify({ 'bucketKey': bucketKey, 'fileToDownload': objectName }),
         type: 'POST',
         success: function (res) {
-            document.getElementById('responseMessage').innerHTML = '<a href="' + res.signedUrl + '">Download result file here</a>'; //TODO - napraviti mesto responseMessage
+            document.getElementById('responseMessage').innerHTML = '<a class="download" href="' + res.signedUrl + '">Download result file here</a>';
         },
-        error: function (err) { console.log(err); }
+        error: function (err) {
+            document.getElementById('responseMessage').innerHTML = '<p class="download">' + err.Message + '</p>';
+        }
     });
 }
 

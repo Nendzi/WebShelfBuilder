@@ -1,6 +1,10 @@
-﻿const sketch = document.getElementById('visual')
+﻿const sketch = document.getElementById('visual');
 var windowWidth = sketch.clientWidth;
-var windowHeight = sketch.clientHeight;
+var windowHeight = sketch.clientHeight - 3;
+
+const showroom = document.getElementById('showroomViewer');
+showroom.style.width = windowWidth + 'px';
+showroom.style.height = windowHeight + 'px';
 
 var renderer, scene, camera
 
@@ -51,8 +55,8 @@ function initEnv() {
     scene.background = new THREE.Color(0xd5cdbf);
 
     //camera
-    var hlfscrw = windowWidth / 2
-    var hlfscrh = windowHeight / 2;
+    var hlfscrw = Math.floor(windowWidth / 2);
+    var hlfscrh = Math.floor(windowHeight / 2);
     camera = new THREE.OrthographicCamera(-hlfscrw, hlfscrw, -hlfscrh, hlfscrh, 1, 500);
     //camera = new THREE.PerspectiveCamera(45, windowWidth / windowHeight, 1, 500);
     camera.position.set(0, 0, 100);

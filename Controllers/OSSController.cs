@@ -26,7 +26,7 @@ namespace WebShelfBuilder.Controllers
         /// </summary>
         [HttpGet]
         [Route("api/forge/oss/buckets")]
-        public async Task<IList<TreeNode>> GetOSSAsync(string id)
+        public async Task<IList<TreeNode>> GetOSSAsync(string id, string fttp)
         {
             IList<TreeNode> nodes = new List<TreeNode>();
             dynamic oauth = await OAuthController.GetInternalAsync();
@@ -34,19 +34,23 @@ namespace WebShelfBuilder.Controllers
             if (id == "#") // root
             {
                 // in this case, let's return all buckets
-                BucketsApi appBckets = new BucketsApi();
-                appBckets.Configuration.AccessToken = oauth.access_token;
+                BucketsApi appBuckets = new BucketsApi();
+                appBuckets.Configuration.AccessToken = oauth.access_token;
 
                 // to simplify, let's return only the first 100 buckets
                 // TODO - enable usage od EMAE buckets
-                dynamic buckets = await appBckets.GetBucketsAsync(bucketRegion, 100);
+                dynamic buckets = await appBuckets.GetBucketsAsync(bucketRegion, 100);
                 foreach (KeyValuePair<string, dynamic> bucket in new DynamicDictionaryItems(buckets.items))
                 {
                     string bucketIdent = bucket.Value.bucketKey;
                     bucketIdent.ToLower();
                     if (bucketIdent.Contains("wallshelfconfig"))
                     {
-                        nodes.Add(new TreeNode(bucket.Value.bucketKey, bucket.Value.bucketKey.Replace(ClientId + "-", string.Empty), "bucket", true));
+                        nodes.Add(new TreeNode(
+                            bucket.Value.bucketKey,
+                            bucket.Value.bucketKey.Replace(ClientId + "-", string.Empty),
+                            "bucket",
+                            true));
                     }
                 }
             }
@@ -60,12 +64,33 @@ namespace WebShelfBuilder.Controllers
                 {
                     string fileName = objInfo.Value.objectKey;
                     fileName.ToLower();
-                    if (fileName.Contains("zip") && fileName.Contains("output"))
+                    string fileType;
+                    if (fileName.Contains("zip") && fileName.Contains("output") || fileName.Contains("outcopy"))
                     {
-                        nodes.Add(new TreeNode(Base64Encode((string)objInfo.Value.objectId),
-                      objInfo.Value.objectKey, "zipfile", false));
+                        if (fileName.Contains("output"))
+                        {
+                            fileType = "zipfile3D";
+                        }
+                        else
+                        {
+                            fileType = "zipfile2D";
+                        }
+
+                        if (fileType == fttp)
+                        {
+                            nodes.Add(new TreeNode(
+                                                Base64Encode((string)objInfo.Value.objectId),
+                                                objInfo.Value.objectKey,
+                                                fileType,
+                                                false)); 
+                        }
+
                     }
-                    //nodes.Add(new TreeNode(Base64Encode((string)objInfo.Value.objectId), objInfo.Value.objectKey, "object", false));
+                    else if (fileName.Contains("pdf") && fileName.Contains("output"))
+                    {
+                        fileType = "pdfobject";
+                        nodes.Add(new TreeNode(Base64Encode((string)objInfo.Value.objectId), objInfo.Value.objectKey, fileType, false));
+                    }                    
                 }
             }
             return nodes;
@@ -106,7 +131,7 @@ namespace WebShelfBuilder.Controllers
 
             try
             {
-                NewBucket= await buckets.CreateBucketAsync(bucketPayload, bucketRegion);
+                NewBucket = await buckets.CreateBucketAsync(bucketPayload, bucketRegion);
             }
             catch (Exception e)
             {
@@ -173,7 +198,9 @@ namespace WebShelfBuilder.Controllers
             using (StreamReader streamReader = new StreamReader(fileSavePath))
             {
                 uploadedObj = await objects.UploadObjectAsync(input.BucketKey,
-                       Path.GetFileName(input.FileToUpload.FileName), (int)streamReader.BaseStream.Length, streamReader.BaseStream,
+                       Path.GetFileName(input.FileToUpload.FileName), 
+                       (int)streamReader.BaseStream.Length, 
+                       streamReader.BaseStream,
                        "application/octet-stream");
             }
 
@@ -195,12 +222,47 @@ namespace WebShelfBuilder.Controllers
         }
 
         /// <summary>
+        /// Make signed Url for object in bucket
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("api/forge/objects/signed")]
+        public async Task<dynamic> DownloadObject([FromBody] DownloadFile input)
+        {
+            // get the bucket
+            dynamic oauth = await OAuthController.GetInternalAsync();
+            ObjectsApi objects = new ObjectsApi();
+            objects.Configuration.AccessToken = oauth.access_token;
+
+            // collect information about file
+            string bucketKey = input.bucketKey;
+            string fileToDownload = input.fileToDownload;
+
+            PostBucketsSigned postBucketsSigned = new PostBucketsSigned(20);
+            try
+            {
+                dynamic result = await objects.CreateSignedResourceAsync(bucketKey, fileToDownload, postBucketsSigned);
+                return result;
+            }
+            catch (Exception ex) { }
+
+            return null;
+        }
+
+        /// <summary>
         /// Base64 enconde a string
         /// </summary>
         public static string Base64Encode(string plainText)
         {
             var plainTextBytes = System.Text.Encoding.UTF8.GetBytes(plainText);
             return System.Convert.ToBase64String(plainTextBytes);
+        }
+
+        public class DownloadFile
+        {
+            public string bucketKey { get; set; }
+            public string fileToDownload { get; set; }
         }
 
         public class UploadFile

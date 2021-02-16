@@ -31,10 +31,23 @@ namespace WebShelfBuilder.Controllers
                 JobPayloadItem.ViewsEnum._3d
                 })
             };
-            JobPayload job;
-            job = new JobPayload(new JobPayloadInput(objModel.ObjectName, true, "MyWallShelf.iam"), new JobPayloadOutput(outputs));
-
+            JobPayloadInput jobPayloadInput;
+            
+            if (objModel.ObjectType == "zipfile3D")
+            {
+                jobPayloadInput =  new JobPayloadInput(objModel.ObjectName, true, "MyWallShelf.iam");
+            }
+            else if (objModel.ObjectType == "zipfile2D")
+            {
+                jobPayloadInput = new  JobPayloadInput(objModel.ObjectName, true, "WallShelfDrawings.idw");
+            }
+            else
+            {
+                jobPayloadInput = new JobPayloadInput(objModel.ObjectName);
+            }
             // start the translation
+            JobPayload job= new JobPayload(jobPayloadInput, new JobPayloadOutput(outputs));
+
             DerivativesApi derivative = new DerivativesApi();
             derivative.Configuration.AccessToken = oauth.access_token;
             dynamic jobPosted = await derivative.TranslateAsync(job);
@@ -48,6 +61,7 @@ namespace WebShelfBuilder.Controllers
         {
             public string BucketKey { get; set; }
             public string ObjectName { get; set; }
+            public string ObjectType { get; set; }
         }
     }
 }

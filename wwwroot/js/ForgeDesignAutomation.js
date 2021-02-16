@@ -1,8 +1,8 @@
 ﻿$(document).ready(function () {
     prepareLists();
     startConnection();
-    $('#loginAndSettings').click(loginAndEngineSetup);
-    //createAppBundleActivity();
+    $('#login').click(login);
+    $('#engineSelect').click(selectEngine);
 });
 
 function prepareLists() {
@@ -53,9 +53,7 @@ function convertItemToText(item) {
     return text;
 }
 
-function loginAndEngineSetup() {
-    var wndElem = document.getElementById('loginSetupWnd');
-    wndElem.style.display = 'block';
+function login() {
     $.post({
         url: 'api/forge/oauth/cred',
         contentType: 'application/json',
@@ -64,9 +62,29 @@ function loginAndEngineSetup() {
             ForgeSecret: document.getElementById('forgeClientSecret').value
         }),
         success: function () {
-            var wndElem = document.getElementById('loginSetupWnd');
-            wndElem.style.display = 'none';
-            createAppBundleActivity();
+            var engSel = document.getElementById('engineSelector');
+            engSel.style.display = 'block';
+            // clear all activity
+            clearAccount();
+        }
+    });
+}
+var choosenEngine;
+function selectEngine() {
+    createAppBundleActivity();          
+    choosenEngine = document.getElementById('engines').value;
+    var engSel = document.getElementById('engineSelector');
+    engSel.style.display = 'none';
+    var wndElem = document.getElementById('loginSetupWnd');
+    wndElem.style.display = 'none';
+}
+
+function clearAccount() {
+    jQuery.ajax({
+        url: 'api/forge/designautomation/account',
+        method: 'DELETE',
+        success: function () {
+            writeLog('Account cleared, all appbundles & activities deleted');              
         }
     });
 }
@@ -74,8 +92,8 @@ function loginAndEngineSetup() {
 function createAppBundleActivity() {
     startConnection(function () {
         writeLog("Defining appbundle and activity for Inventor");
-        createActivity(function () {
-            createAppBundle()
+        createAppBundle (function () {
+            createActivity()
         });
     });
 }
@@ -85,11 +103,11 @@ function createAppBundle(cb) {
     jQuery.ajax({
         url: 'api/forge/designautomation/appbundles',
         method: 'POST',
-        contentType: 'application/json'/*,
+        contentType: 'application/json',
         data: JSON.stringify({
-            zipFileName: 'DA4ShelfBuilderPlugin.bundle.zip',
-            engine: document.getElementById('engines').value})*/
-        ,
+            //zipFileName: 'DA4ShelfBuilderPlugin.bundle.zip',
+            engine: document.getElementById('engines').value
+        }),
         success: function (res) {
             writeLog('AppBundle: ' + res.appBundle + ', v' + res.version);
             if (cb) cb();
@@ -105,7 +123,7 @@ function createActivity(cb) {
         contentType: 'application/json',
         data: JSON.stringify({
             //zipFileName: 'MyWallShelf.zip',
-            engine: document.getElementById('engines').value
+            engine: choosenEngine
         }),
         success: function (res) {
             writeLog('Activity: ' + res.activity);
@@ -170,5 +188,6 @@ function startConnection(onReady) {
 
     connection.on("onComplete", function (message) {
         writeLog(message);
+        $('#appBuckets').jstree(true).refresh();
     });
 }

@@ -110,8 +110,11 @@ namespace WebShelfBuilder.Controllers
         /// </summary>
         [HttpPost]
         [Route("api/forge/designautomation/appbundles")]
-        public async Task<IActionResult> CreateAppBundle() //[FromBody] JObject appBundleSpecs)
+        public async Task<IActionResult> CreateAppBundle([FromBody] JObject appBundleSpecs) //
         {
+            //each call make new instance so every time i is nessessary to read Engine name
+            string EngineName = appBundleSpecs["engine"].Value<string>();
+
             // check if ZIP with bundle is here
             string packageZipPath = Path.Combine(LocalBundlesFolder, ZipFileName);
             if (!System.IO.File.Exists(packageZipPath)) throw new Exception("Appbundle not found at " + packageZipPath);
@@ -242,6 +245,14 @@ namespace WebShelfBuilder.Controllers
                                 Verb = Verb.Put,
                                 Zip = true
                             }
+                        },
+                        { "outputPDFFile", new Parameter()
+                            {
+                                Description="Drawing in PDF format",
+                                LocalName=@"Wall_shelf\test.pdf",
+                                Verb=Verb.Put,
+                                Zip=false
+                            }
                         }
                     }
                 };
@@ -289,7 +300,6 @@ namespace WebShelfBuilder.Controllers
             dataSetBuilder.SaveJsonData(input.shelfData, "params.json");
             dataSetBuilder.ZipFolder("MyWallShelf.zip");
             JObject connItemData = JObject.Parse(input.forgeData);
-            // TODO - Param should be replaced
 
             string uniqueActivityName = string.Format("{0}.{1}+{2}", NickName, ActivityName, Alias);
             string browerConnectionId = connItemData["browerConnectionId"].Value<string>();
@@ -353,7 +363,17 @@ namespace WebShelfBuilder.Controllers
                     {"Authorization", "Bearer " + oauth.access_token }
                 }
             };
-
+            // 3a. output pdf fajl out of zipping
+            string outputPDFFileNameOSS = string.Format("{0}_output_{1}", DateTime.Now.ToString("yyyyMMddhhmmss"), "Result.pdf"); // avoid overriding
+            XrefTreeArgument outputPDFFileArgument = new XrefTreeArgument()
+            {
+                Url = string.Format("https://developer.api.autodesk.com/oss/v2/buckets/{0}/objects/{1}", bucketKey, outputPDFFileNameOSS),
+                Verb = Verb.Put,
+                Headers = new Dictionary<string, string>()
+                {
+                    {"Authorization", "Bearer " + oauth.access_token }
+                }
+            };
             // prepare & submit workitem
             // the callback contains the connectionId (used to identify the client) and the outputFileName of this workitem
             string callbackUrl = string.Format(
@@ -370,6 +390,7 @@ namespace WebShelfBuilder.Controllers
                     { "inputFile", inputFileArgument },
                     //{ "inputJson",  inputJsonArgument },
                     { "outputFile", outputFileArgument },
+                    { "outputPDFFile", outputPDFFileArgument },
                     { "onComplete", new XrefTreeArgument { Verb = Verb.Post, Url = callbackUrl } }
                 }
             };
@@ -422,6 +443,11 @@ namespace WebShelfBuilder.Controllers
                 ObjectsApi objectsApi = new ObjectsApi();
                 dynamic signedUrl = await objectsApi.CreateSignedResourceAsyncWithHttpInfo(bucketKey, outputFileName, new PostBucketsSigned(10), "read");
                 await _hubContext.Clients.Client(id).SendAsync("downloadResult", (string)(signedUrl.Data.signedUrl));
+
+                // generate copy of object to translate in 2D. Original will be transpated in 3D
+                string[] outputFileNameParts = outputFileName.Split('_');
+                string newFileName = outputFileNameParts[0] + "_outcopy_" + outputFileNameParts[2];
+                await objectsApi.CopyToAsync(bucketKey, outputFileName, newFileName);
             }
             catch { }
 

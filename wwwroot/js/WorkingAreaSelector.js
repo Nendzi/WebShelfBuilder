@@ -58,12 +58,12 @@ function inactivateButtons() {
     buttons.push(document.getElementById('forVisualization'));
 
     for (var i = 0; i < buttons.length; i++) {
-        if (!buttons[i].classList.contains('btn-inactive')) {
-            buttons[i].classList.add('btn-inactive');
+        if (!buttons[i].classList.contains('bttn-inactive')) {
+            buttons[i].classList.add('bttn-inactive');
         }   
     }
 }
 
 function activateButton(whichButton) {
-    document.getElementById(whichButton).classList.remove('btn-inactive');
+    document.getElementById(whichButton).classList.remove('bttn-inactive');
 }
