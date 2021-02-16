@@ -74,7 +74,7 @@ namespace WebShelfBuilder.Controllers
                 OAuthController.GetAppSetting("FORGE_CLIENT_ID"),
                 OAuthController.GetAppSetting("FORGE_CLIENT_ID")
                 );
-            _designAutomation = api;
+            _designAutomation = da.Client;
             _env = env;
             _hubContext = hubContext;
         }
