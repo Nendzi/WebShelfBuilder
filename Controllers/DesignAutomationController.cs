@@ -299,8 +299,7 @@ namespace WebShelfBuilder.Controllers
             {
                 DataSetBuilder dataSetBuilder = new DataSetBuilder(LocalDataSetFolder, "DataSet");
                 dataSetBuilder.SaveJsonData(input.shelfData, "params.json");
-                dataSetBuilder.ZipFolder("MyWallShelf.zip");
-                JObject connItemData = JObject.Parse(input.forgeData);
+                dataSetBuilder.ZipFolder("MyWallShelf.zip");                
             }
             catch (Exception ex)
             {
@@ -308,6 +307,7 @@ namespace WebShelfBuilder.Controllers
                 return Ok(new { WorkItemId = ex.Message }); ;
             }
 
+            JObject connItemData = JObject.Parse(input.forgeData);
             string uniqueActivityName = string.Format("{0}.{1}+{2}", NickName, ActivityName, Alias);
             string browerConnectionId = connItemData["browerConnectionId"].Value<string>();
 
