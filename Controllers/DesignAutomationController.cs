@@ -72,7 +72,7 @@ namespace WebShelfBuilder.Controllers
             // DesignAutomation must be created as new instance.
             DesignAutomationClientBuilder da = new DesignAutomationClientBuilder(
                 OAuthController.GetAppSetting("FORGE_CLIENT_ID"),
-                OAuthController.GetAppSetting("FORGE_CLIENT_ID")
+                OAuthController.GetAppSetting("FORGE_CLIENT_SECRET")
                 );
             _designAutomation = da.Client;
             _env = env;
