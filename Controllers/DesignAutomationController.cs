@@ -294,12 +294,19 @@ namespace WebShelfBuilder.Controllers
         [Route("api/forge/designautomation/workitems")]
         public async Task<IActionResult> StartWorkitem([FromForm] StartWorkitemInput input)
         {
-            // TODO - podaci iz clienta o polici su prošli ka input.shelfData. Sada te podatke treba obraditi i snimiti na server kao params.json i posle zapakovati sa ostalim templejtime
-            JObject workItemData = JObject.Parse(input.shelfData);
-            DataSetBuilder dataSetBuilder = new DataSetBuilder(LocalDataSetFolder, "DataSet");
-            dataSetBuilder.SaveJsonData(input.shelfData, "params.json");
-            dataSetBuilder.ZipFolder("MyWallShelf.zip");
-            JObject connItemData = JObject.Parse(input.forgeData);
+
+            try
+            {
+                DataSetBuilder dataSetBuilder = new DataSetBuilder(LocalDataSetFolder, "DataSet");
+                dataSetBuilder.SaveJsonData(input.shelfData, "params.json");
+                dataSetBuilder.ZipFolder("MyWallShelf.zip");
+                JObject connItemData = JObject.Parse(input.forgeData);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok(new { WorkItemId = ex.Message }); ;
+            }
 
             string uniqueActivityName = string.Format("{0}.{1}+{2}", NickName, ActivityName, Alias);
             string browerConnectionId = connItemData["browerConnectionId"].Value<string>();
