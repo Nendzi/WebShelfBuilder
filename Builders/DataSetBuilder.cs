@@ -17,19 +17,21 @@ namespace WebShelfBuilder.Builders
             _path = path;
             _folder = folder;
         }
+
+        // ne heroku serveru kotisti se / za direktorijume a na localhostu \\
         public void SaveJsonData(string jsonData, string fileName)
         {
-            File.WriteAllText(_path + "\\"+_folder + "\\" + fileName, jsonData);
+            File.WriteAllText(_path + "/"+_folder + "/" + fileName, jsonData);
         }
 
         public void ZipFolder(string zipFileName)
         {
-            string fullZipFileName = _path + "\\" + zipFileName;
+            string fullZipFileName = _path + "/" + zipFileName;
             if (File.Exists(fullZipFileName))
             {
                 File.Delete(fullZipFileName);
             }
-            ZipFile.CreateFromDirectory(_path + "\\" + _folder, fullZipFileName);
+            ZipFile.CreateFromDirectory(_path + "/" + _folder, fullZipFileName);
         }
     }
 }
