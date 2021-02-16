@@ -378,8 +378,8 @@ namespace WebShelfBuilder.Controllers
             // the callback contains the connectionId (used to identify the client) and the outputFileName of this workitem
             string callbackUrl = string.Format(
                 "{0}/api/forge/callback/designautomation?id={1}&outputFileName={2}",
-                OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), // TODO - this address is only for dev stage
-                                                                    //"https://webwallshelfbuilder.herokuapp.com",
+                //OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                "https://webwallshelfbuilder.herokuapp.com",
                 browerConnectionId,
                 outputFileNameOSS);
             WorkItem workItemSpec = new WorkItem()
@@ -404,8 +404,6 @@ namespace WebShelfBuilder.Controllers
             {
                 return Ok(new { WorkItemId = e.Message });
             }
-
-
         }
 
         /// <summary>
