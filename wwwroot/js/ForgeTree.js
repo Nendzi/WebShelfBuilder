@@ -293,7 +293,7 @@ function downloadObject(node) {
 }
 
 function deleteFile(node) {
-    $("#forgeViewer").empty();
+    $("#showroomViewer").empty();
     var node = $('#appBuckets').jstree(true).get_selected(true)[0];
     var bucketKey = node.parent;
     var objectKey = node.text;
