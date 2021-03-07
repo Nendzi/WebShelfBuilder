@@ -1,12 +1,25 @@
-﻿const sketch = document.getElementById('visual');
+﻿$(document).ready(function () {
+    $('#forVisualization').click(function () {
+        openVisualization();
+    });
+    $('#forModeler').click(function () {
+        openDesignAutomation();
+    });
+});
+
+function openVisualization() {
+    window.location = 'forgeviewer.html';
+}
+
+function openDesignAutomation() {
+    window.location = 'forgeda.html';
+}
+
+const sketch = document.getElementById('visual');
 var windowWidth = sketch.clientWidth;
 var windowHeight = sketch.clientHeight - 3;
 
-const showroom = document.getElementById('showroomViewer');
-showroom.style.width = windowWidth + 'px';
-showroom.style.height = windowHeight + 'px';
-
-var renderer, scene, camera
+var painter, whiteboard, viewShot
 
 var linePreview;
 var line;
@@ -44,23 +57,22 @@ initVars();
 
 function initRender() {
     // renderer
-    renderer = new THREE.WebGLRenderer();
-    renderer.setSize(windowWidth, windowHeight);
-    document.getElementById('sketchViewer').appendChild(renderer.domElement);
+    painter = new THREE.WebGLRenderer();
+    painter.setSize(windowWidth, windowHeight);
+    document.getElementById('sketchViewer').appendChild(painter.domElement);
 }
 
 function initEnv() {
     //scene
-    scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xd5cdbf);
+    whiteboard = new THREE.Scene();
+    whiteboard.background = new THREE.Color(0xd5cdbf);
 
     //camera
     var hlfscrw = Math.floor(windowWidth / 2);
     var hlfscrh = Math.floor(windowHeight / 2);
-    camera = new THREE.OrthographicCamera(-hlfscrw, hlfscrw, -hlfscrh, hlfscrh, 1, 500);
-    //camera = new THREE.PerspectiveCamera(45, windowWidth / windowHeight, 1, 500);
-    camera.position.set(0, 0, 100);
-    camera.lookAt(0, 0, 0);
+    viewShot = new THREE.OrthographicCamera(-hlfscrw, hlfscrw, -hlfscrh, hlfscrh, 1, 500);
+    viewShot.position.set(0, 0, 100);
+    viewShot.lookAt(0, 0, 0);
 
     //geometry
     const preLineGeometry = new THREE.BufferGeometry();
@@ -84,13 +96,13 @@ function initEnv() {
 
     //line
     linePreview = new THREE.Line(preLineGeometry, preLineMaterial);
-    scene.add(linePreview);
+    whiteboard.add(linePreview);
 
     //spheres as point markers
     firstPointMarker = new THREE.Mesh(sphereGeometry, firstPointMaterial);
-    scene.add(firstPointMarker);
+    whiteboard.add(firstPointMarker);
     secondPointMarker = new THREE.Mesh(sphereGeometry, secondPointMaterial);
-    scene.add(secondPointMarker);
+    whiteboard.add(secondPointMarker);
     setMakrerOnLineEnd(3);
     setMakrerOnLineEnd(4);
 
@@ -132,7 +144,7 @@ function updatePosition(x, y, index) {
 
 function render() {
 
-    renderer.render(scene, camera);
+    painter.render(whiteboard, viewShot);
 }
 
 function horOrient(x, y) {
@@ -196,8 +208,8 @@ function selectionHandler() {
         pickedObject = undefined;
     }
 
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children);
+    raycaster.setFromCamera(mouse, viewShot);
+    const intersects = raycaster.intersectObjects(whiteboard.children);
 
     if (intersects.length) {
         pickedObject = intersects[0].object;
@@ -232,7 +244,7 @@ function setMakrerOnLineEnd(endId,zIndex) {
         ym = 0;
         zIndex = 200;
     }
-    marker = scene.children[endId];
+    marker = whiteboard.children[endId];
     marker.position.copy(new THREE.Vector3(xm, ym, zIndex));
     marker.matrixAutoUpdate = false;
     marker.updateMatrix();
@@ -401,7 +413,7 @@ function createLine() {
         var lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
         const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
         var line = new THREE.Line(lineGeometry, lineMaterial);
-        scene.add(line);
+        whiteboard.add(line);
         pointsNumber = 1;
         // last point will be first point
         points.shift();

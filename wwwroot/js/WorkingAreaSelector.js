@@ -47,7 +47,7 @@ function switchViewers(whichViewer) {
         default:
     }
 
-    viewers[viewerIndex].style.display = 'initial';
+    viewers[viewerIndex].style.display = 'block';
 }
 
 function inactivateButtons() {

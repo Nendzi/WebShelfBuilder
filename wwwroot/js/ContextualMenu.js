@@ -44,7 +44,7 @@ function stopDrawing() {
 
 $('#closeLines').click(function () {
     // at least four points must be on canvas for closing
-    if (scene.children.length > 3) {
+    if (whiteboard.children.length > 3) {
         // read first point from current string
         points.push(new THREE.Vector3(firstPointX_coord, firstPointY_coord, 0));
         createLine();
@@ -71,11 +71,11 @@ function deletedSelectedLine() {
     // set index on zero
     var index = 0;
     // search for selected line in all lines
-    for (var line of scene.children) {
+    for (var line of whiteboard.children) {
         // compare like objects
         if (line===pickedObject) {
             //if line have been found delete it from children
-            scene.children.splice(index, 1);
+            whiteboard.children.splice(index, 1);
             // simulate escape pressed
             escPressed();
             // show changes

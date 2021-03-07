@@ -6,7 +6,7 @@ var coordOfElements = { x1: 0, y1: 0, x2: 0, y2: 0 };
 function lineDataToJSON() {
     const shelfDepth = document.getElementById('shelfDepth').value;
     const shelfThk = document.getElementById('shelfThickness').value;
-    const shelfElements = scene.children;
+    const shelfElements = whiteboard.children;
     const material = document.getElementById('selectMat').value;
 
     for (var i = 3; i < shelfElements.length; i++) {

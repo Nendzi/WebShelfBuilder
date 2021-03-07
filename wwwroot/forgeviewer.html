@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>TeamCAD - Shelf viewer</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600&display=swap" rel="stylesheet">
+    <!--Common packages: jQuery, jsTree-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/jstree.min.js"></script>
+    <!--.NET SignalR-->
+    <script src="//unpkg.com/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
+    <!--Autodesk Forge Viewer files-->
+    <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.min.css" type="text/css">
+    <!-- THREE from Forge viewer -->
+    <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.min.js"></script>
+    <!--this project files-->
+    <link href="/css/Main.css" rel="stylesheet" />
+    <link href="/css/ForgeViewer.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="column">
+        <!-- oprions bar -->
+        <div class="communicationPanel">
+            <!-- Tree panel-->
+            <div class="panelHeading">
+                Buckets &amp; Objects
+                <span id="refreshBuckets" class="glyphicon glyphicon-refresh" style="cursor: pointer"></span>
+            </div>
+            <div class="panelBucket" id="appBuckets">
+                tree here
+            </div>
+            <!-- End of tree panel -->
+            <!-- Switch panel -->
+            <div class="infotextConteiner">
+                <div class="labelBlock">
+                    <div class="sale">3D model</div>
+                    <div class="rent">Drawings</div>
+                </div>
+                <div class="tab"></div>
+            </div>
+            <div id="responseMessage" class="dwnld"></div>
+            <!-- End of switch panel -->
+            <!-- Enviorment buttons panel -->
+            <div class="envBtns">
+                <button id="forSketcher" class="bttn onleft">Sketch panel</button>
+                <button id="forModeler" class="bttn onleft bttn-inactive">Forge model and documentation</button>
+            </div>
+            <!-- End of Env btn panel-->
+
+        </div>
+        <!-- End of options bar -->
+        <div id="visual" class="visualPanel">
+            <div id="loading" class="loadingPanel">
+                <div class="loadingDiv">Loading</div>
+            </div>
+            <div id="showroomViewer"></div>
+        </div>
+    </div>
+
+    <!-- For the future upload env -->
+    <form id="uploadFile" method='post' enctype="multipart/form-data">
+        <input id="hiddenUploadField" type="file" name="theFile" style="visibility:hidden" />
+    </form>
+    <!-- end of future upload env -->
+    <script src="/js/ForgeViewer.js"></script>
+    <script src="js/ForgeTree.js"></script>
+    <script src="/js/Selector.js"></script>
+</body>
+</html>

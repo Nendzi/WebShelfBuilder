@@ -31,7 +31,7 @@ namespace WebShelfBuilder.Controllers
             IList<TreeNode> nodes = new List<TreeNode>();
             dynamic oauth = await OAuthController.GetInternalAsync();
 
-            if (id == "#") // root
+            if (id == "#" || id == null) // root
             {
                 // in this case, let's return all buckets
                 BucketsApi appBuckets = new BucketsApi();

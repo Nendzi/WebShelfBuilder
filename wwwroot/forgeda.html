@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>TeamCAD - Shelf Builder</title>
+    <meta charset="utf-8" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/themes/default/style.min.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600&display=swap" rel="stylesheet">
+    <!--Common packages: jQuery, jsTree-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.7/jstree.min.js"></script>
+    <!--.NET SignalR-->
+    <script src="//unpkg.com/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
+    <!--this project files-->
+    <link href="/css/Main.css" rel="stylesheet" />
+    <link href="/css/CustomDropbox.css" rel="stylesheet"/>
+    <link href="css/ForgeDA.css" rel="stylesheet" />
+    <script src="/js/ForgeTree.js"></script>
+    <script src="/js/ForgeDesignAutomation.js"></script>
+</head>
+
+<body>
+    <div class="column">
+        <!-- oprions bar -->
+        <div class="communicationPanel">
+
+            <div id="forgeViewer">
+                <div class="shelfData">
+                    <div>
+                        <label for="depth">Shelf depth</label>
+                        <input id="shelfDepth" class="inputNumbers" type="number" min="100" max="400" required />
+                    </div>
+                    <div>
+                        <label for="thkness">Shelf thickness</label>
+                        <input id="shelfThickness" class="inputNumbers" type="number" min="18" max="40" required />
+                    </div>
+                    <div class="custom-select">
+                        <select id="selectMat">
+                            <option value="0">Select material</option>
+                            <option value="1">English Oak</option>
+                            <option value="2">Maple</option>
+                            <option value="3">Red Birch</option>
+                            <option value="4">Teak</option>
+                            <option value="5">Wild Cherry</option>
+                            <option value="6">Yellow Pine</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button id="startWorkitem" class="bttn onleft">Commence 3D model creation</button>
+                    </div>
+                </div>
+            </div>
+            <div class="optionBtns">
+                <button id="forSketcher" class="bttn onleft">Sketch panel</button>
+                <button id="forVisualization" class="bttn onleft bttn-inactive">Visualisation</button>
+            </div>
+        </div>
+        <!-- End of options bar -->
+        <div id="visual" class="visualPanel">
+            <div>
+                <pre id="outputlog" style="height: calc(100vh - 120px); overflow-y: scroll;"></pre>
+            </div>            
+        </div>
+    </div>
+
+    <script src="/js/CustomDropbox.js"></script>
+
+</body>
+</html>

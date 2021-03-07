@@ -3,14 +3,12 @@
     $('#refreshBuckets').click(function () {
         $('#appBuckets').jstree(true).refresh();
     });
-    $('#loginSetup').click(function () {
-        document.getElementById('loginSetupWnd').style.display = 'block';
+    $('#forSketcher').click(function () {
+        openSketcher();
+    });    
+    $('#forModeler').click(function () {
+        openDesignAutomation();
     });
-    $('#showFormCreateBucket').click(function () {
-        createNewBucket();
-    });
-
-    $('#discID').click(changeSliderPosition);
 
     $('#hiddenUploadField').change(function () {
         var node = $('#appBuckets').jstree(true).get_selected(true)[0];
@@ -22,7 +20,6 @@
                 var formData = new FormData();
                 formData.append('fileToUpload', file);
                 formData.append('bucketKey', node.id);
-
                 $.ajax({
                     url: '/api/forge/oss/objects',
                     data: formData,
@@ -39,22 +36,13 @@
     });
 });
 
-function createNewBucket() {
-    var bucketKey = 'wallshelfconfig';
-    jQuery.post({
-        url: '/api/forge/oss/buckets',
-        contentType: 'application/json',
-        data: JSON.stringify({ 'bucketKey': bucketKey }),
-        success: function (res) {
-            $('#appBuckets').jstree(true).refresh();
-        },
-        error: function (err) {
-            if (err.status == 409)
-                alert('Bucket already exists - 409: Duplicated')
-            console.log(err);
-        }
-    });
+function openSketcher() {
+    window.location = 'sketcher.html';
 }
+
+function openDesignAutomation() {
+    window.location = 'forgeda.html';
+} 
 
 var fileTypeToTranslate = "zipfile3D";
 

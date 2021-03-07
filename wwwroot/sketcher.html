@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>TeamCAD - Shelf Builder</title>
+    <meta charset="utf-8" />
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">-->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600&display=swap" rel="stylesheet">
+    <!--Common packages: jQuery, jsTree-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!--this project files-->
+    <link href="/css/Main.css" rel="stylesheet" />
+    <link href="/css/CustomDropbox.css" rel="stylesheet" />
+    <link href="/css/Sketcher.css" rel="stylesheet" />
+    <script src="/js/ForgeTree.js"></script>
+    <script src="/js/ForgeViewer.js"></script>
+    <script src="/js/ForgeDesignAutomation.js"></script>
+    <!-- THREE js package from three -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.js"></script>
+    <script src="/js/PreparingDataForForging.js"></script>
+</head>
+
+<body>
+    <div class="column">
+        <!-- oprions bar -->
+        <div class="communicationPanel">
+            <div class="lineProperties" id="lineProp">
+                <div>
+                    <div class="startPoint">
+                        <label for="fpx">Start point X:</label>
+                        <input class="inputNumbers" type="number" id="firstPoint_x" name="fpx" min="100" max="2500" required><br>
+                        <label for="fpy">Start point Y:</label>
+                        <input class="inputNumbers" type="number" id="firstPoint_y" name="fpy" min="100" max="2500" required>
+                    </div>
+                    <button id="updateLength1" class="bttn bttn-massive">Update Length</button>
+                    <button id="extendStartPoint1" class="bttn bttn-massive">Extend</button>
+                    <button id="pasteStartPoint1" class="bttn bttn-massive">Move</button>
+                    <button id="copyStartPoint1" class="bttn bttn-massive">Grab</button>
+                </div>
+                <div>
+                    <div class="endPoint">
+                        <label for="epx">End point X:</label>
+                        <input class="inputNumbers" type="number" id="lastPoint_x" name="epx" min="100" max="2500" required><br>
+                        <label for="epy">End point Y:</label>
+                        <input class="inputNumbers" type="number" id="lastPoint_y" name="epy" min="100" max="2500" required>
+                    </div>
+                    <button id="updateLength2" class="bttn bttn-massive">Update Length</button>
+                    <button id="extendStartPoint2" class="bttn bttn-massive">Extend</button>
+                    <button id="pasteStartPoint2" class="bttn bttn-massive">Move</button>
+                    <button id="copyStartPoint2" class="bttn bttn-massive">Grab</button>
+                </div>
+                <label for="lght">Line length:</label>
+                <input type="number" id="lineLen" name="lght" min="100" max="2500" required>
+            </div>
+            <div class="optionBtns">
+                <button id="forModeler" class="bttn onleft bttn-inactive">Forge model and documentation</button>
+                <button id="forVisualization" class="bttn onleft bttn-inactive">Visualisation</button>
+            </div>
+        </div>        
+        <!-- End of options bar -->
+        <div id="visual" class="visualPanel">
+            <div id="sketchViewer">
+                <!-- Info is placeholder for dimension or line length display-->
+                <div id="info">Description</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contextual menu-->
+    <div class="custom-cm" id="cm">
+        <div class="custom-cm-item" id="stopDrawLine">Stop</div>
+        <div class="custom-cm-item" id="closeLines">Close</div>
+        <div class="custom-cm-item" id="deleteLine">Delete</div>
+        <div class="custom-cm-divider"></div>
+        <div class="custom-cm-item" id="filterVert">Filter |</div>
+        <div class="custom-cm-item" id="filterHor">Filter -</div>
+        <div class="custom-cm-item" id="pointFrom">From</div>
+        <div class="custom-cm-item" id="elementTo">To</div>
+        <div class="custom-cm-divider"></div>
+        <div class="custom-cm-item" id="clearCanvas">Clear all</div>
+    </div>
+    <!-- end of contextual menu-->
+    <!-- Info window for sketcher-->
+    <div class="information" id="infoWnd">
+        <div class="topRibbon">
+            <button id="closeBtn">X</button>
+        </div>
+        <p> Close command can be used only on three and more lines.</p>
+    </div>
+    <!-- end of info window-->
+    <script src="js/Sketcher.js"></script>
+    <script src="js/ContextualMenu.js"></script>
+    <script src="js/LineProperties.js"></script>
+    <script src="/js/CustomDropbox.js"></script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+﻿html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    box-sizing:border-box;
+}
+
+body {
+    width: calc(100vw - 11px);
+    height: calc(100vh - 30px);    
+}
+
+.column {
+    width: 100%;
+    height: 100%;
+}
+
+.navbar {
+    list-style-type: none;
+    height: 40px;
+    margin: 8px 20px;
+    padding: 0;
+}
+
+img {
+    height: 40px;
+}
+
+.settingIcon {
+    float: right;
+    margin-right: 20px;
+}
+
+li {
+    float: left;
+}
+
+.communicationPanel, .visualPanel {
+    float: left;
+}
+
+.communicationPanel {
+    width: 30%;
+    min-width: 350px;
+    height: 100%;
+    border: 2px solid #a2a2a2;
+    margin: 0 0 0 15px;
+}
+.infotextConteiner {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+}
+.infotext {
+    width: 15%;
+    display: inline-block;
+    margin-left: 5px;
+    font-size: 16px;
+}
+
+.stadium {
+    width: 10%;
+    display: inline-block;
+    border: 1px solid #a2a2a2;
+    border-radius: 13px;
+    height: 26px;
+    position: relative;
+}
+
+.disc {
+    width: 20px;
+    height: 20px;
+    background-color: #3c3c3c;
+    border-radius: 50%;
+    margin:2px 0;
+    position: absolute; 
+    left: 2px;
+}
+
+.dwnld {
+    width: 100%;
+    text-align: center;
+    background: bisque;
+}
+
+.download {
+    margin: 0 auto;
+    text-align: center;
+    padding: 1em;
+    display: inline-block;
+}
+
+.panelSetup, .panelHeading, .panelBucket {
+    width: auto;
+    height: auto;
+    display: block;
+}
+
+.panelHeading, .panelBucket {
+    padding: 8px 20px;
+}
+
+#appBuckets {
+    overflow: auto;
+    width: 100%;
+    height: calc(100vh - 450px);
+}
+
+#lineProp {
+    visibility: hidden;
+    padding: 20px;
+}
+
+.lineProperties label {
+    width: 119px;
+    display: inline-block;
+}
+
+.inputNumbers {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+.startPoint, .endPoint {
+    width: 215px;
+    display: inline-block;
+}
+
+.startPoint {
+    border: 2px solid #ff00ff;
+    background-color: rgba(255,0,255,0.5);    
+}
+
+.endPoint {
+    border: 2px solid #00ffff;
+    background-color: rgba(0,255,255,0.5);
+}
+
+.visualPanel {
+    width: 69%;
+    height: 100%;
+}
+
+.optionBtns {
+    min-height: 10px;
+    overflow: hidden;
+}
+
+.bttn {
+    float: right;
+    padding: 4px 12px;
+    background-color: #9b8968;
+    color: darkblue;
+    border-left: 1px solid #9b8968;
+    border-right: 1px solid #9b8968;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.bttn-massive {
+    height: 50px;
+    width: 65px;
+    margin: 2px;
+}
+
+.onleft {
+    float: left;
+}
+
+.onright {
+    float: right;
+}
+
+.bttn-inactive {
+    background-color: beige;
+    color: darkblue;
+    border-left: 1px solid #9b8968;
+    border-right: 1px solid #9b8968;
+}
+
+#sketchViewer {
+    position: relative;
+    display: initial;
+    width: 100%;
+    height: 100%;
+}
+
+#info {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 45px;
+    text-align: center;
+    z-index: 10;
+    display: none;
+}
+
+#forgeViewer {
+    display: none;
+    width: 1300px;
+    height: 900px;
+}
+
+.shelfData {
+    margin-top: 5px;
+}
+
+#showroomViewer {
+    display: none;
+    width: 99%;
+    height: 98%;
+    position: relative;
+}
+
+span {
+    cursor: pointer;
+}
+
+.custom-cm {
+    background-color: beige;
+    border: 1px solid #c3c3c3;
+    box-shadow: 1px 10px 10px rgba(0,0,0,0.2);
+    padding: 10px 0;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    width: 200px;
+    display: none;
+    z-index: 20;
+}
+
+.custom-cm-item {
+    padding: 8px 15px;
+}
+
+    .custom-cm-item:hover {
+        cursor: pointer;
+        background-color: #9b8968;
+    }
+
+.custom-cm-divider {
+    border-bottom: 1px solid #808080;
+    margin: 10px 0;
+}
+
+.information {
+    position: absolute;
+    width: 200px;
+    border: 1px solid red;
+    display: none;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(155, 137, 104,0.4);
+}
+
+    .information p {
+        margin: 10px;
+    }
+
+.topRibbon {
+    height: 18px;
+}
+
+#closeBtn {
+    background-color: red;
+    color: white;
+    font-size: 18px;
+    float: right;
+}
+
+.loginWindow{
+    display:none;
+    position:absolute;
+    left:50px;
+    top:300px;
+}
+
+.loginBtn {
+    margin: 0 auto;
+    padding: 4px 12px;
+    background-color: #9b8968;
+    color: darkblue;
+    border-left: 1px solid #9b8968;
+    border-right: 1px solid #9b8968;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+.inputCred {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    width: 270px;
+}
+
+.logInLabel { 
+    width: 170px;
+}
+
+#engineSelector {
+    display: none;
+}

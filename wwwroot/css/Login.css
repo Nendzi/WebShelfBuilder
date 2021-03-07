@@ -1,0 +1,77 @@
+﻿.divCenter {
+    margin: 0 auto;
+    width: fit-content;
+}
+
+.navbar {
+    list-style-type: none;
+    height: 100%;
+    padding: 8px 20px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    height: 65px;
+}
+
+.settingIcon {
+    float: right;
+}
+
+li {
+    float: left;
+}
+
+.communicationPanel {
+    min-width: 350px;
+    width: 30%;
+    height: 100%;
+    border: 2px solid #a2a2a2;
+}
+
+.panelSetup {
+    height: 100px;
+}
+
+.loginWindow {
+    display: none;
+    margin: 0 auto;
+}
+
+.loginBtn {
+    margin: 10px auto;
+    padding: 4px 12px;
+    background-color: #9b8968;
+    color: darkblue;
+    border-left: 1px solid #9b8968;
+    border-right: 1px solid #9b8968;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.inputCred {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    width: 270px;
+}
+
+.divCenter select {
+    padding: 3px 2px;
+}
+
+.logInLabel {
+    width: 200px;
+    display: inline-block;
+    margin: 10px 0;
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+}
+
+#projectSelector, #newBucket {
+    display: none;
+}

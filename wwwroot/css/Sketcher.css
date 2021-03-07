@@ -1,0 +1,133 @@
+﻿
+.communicationPanel, .visualPanel {
+    float: left;
+}
+
+.communicationPanel {
+    width: 30%;
+    min-width: 350px;
+    height: 100%;
+    border: 2px solid #a2a2a2;
+}
+
+.visualPanel {
+    width: calc(70% - 4px);
+    height: 100%;
+}
+
+#lineProp {
+    visibility: hidden;
+    padding: 20px;
+}
+
+.lineProperties label {
+    width: 119px;
+    display: inline-block;
+}
+
+.inputNumbers {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+}
+
+.startPoint, .endPoint {
+    width: 215px;
+    display: inline-block;
+}
+
+.startPoint {
+    border: 2px solid #ff00ff;
+    background-color: rgba(255,0,255,0.5);    
+}
+
+.endPoint {
+    border: 2px solid #00ffff;
+    background-color: rgba(0,255,255,0.5);
+}
+
+.optionBtns {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#sketchViewer {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#info {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 45px;
+    text-align: center;
+    z-index: 10;
+    display: none;
+}
+
+.shelfData {
+    margin-top: 5px;
+}
+
+.custom-cm {
+    background-color: beige;
+    border: 1px solid #c3c3c3;
+    box-shadow: 1px 10px 10px rgba(0,0,0,0.2);
+    padding: 10px 0;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    width: 200px;
+    display: none;
+    z-index: 20;
+}
+
+.custom-cm-item {
+    padding: 8px 15px;
+}
+
+    .custom-cm-item:hover {
+        cursor: pointer;
+        background-color: #9b8968;
+    }
+
+.custom-cm-divider {
+    border-bottom: 1px solid #808080;
+    margin: 10px 0;
+}
+
+.information {
+    position: absolute;
+    width: 200px;
+    border: 1px solid red;
+    display: none;
+    top: 0px;
+    left: 0px;
+    background-color: rgba(155, 137, 104,0.4);
+}
+
+    .information p {
+        margin: 10px;
+    }
+
+.topRibbon {
+    height: 18px;
+}
+
+#closeBtn {
+    background-color: red;
+    color: white;
+    font-size: 18px;
+    float: right;
+}
+
+.inputCred {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    width: 270px;
+}

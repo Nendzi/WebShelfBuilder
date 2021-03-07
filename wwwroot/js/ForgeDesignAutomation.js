@@ -1,82 +1,11 @@
 ﻿$(document).ready(function () {
-    prepareLists();
+    $('#startWorkitem').click(prepareWorkitem);
     startConnection();
-    $('#login').click(login);
-    $('#engineSelect').click(selectEngine);
 });
 
-function prepareLists() {
-    list('engines', '/api/forge/designautomation/engines');
-}
-
-function list(control, endpoint) {
-    $('#' + control).find('option').remove().end();
-    jQuery.ajax({
-        url: endpoint,
-        success: function (list) {
-            if (list.length === 0)
-                $('#' + control).append($('<option>', { disabled: true, text: 'Nothing found' }));
-            else
-                list.forEach(function (item) {
-                    var test = item.toLowerCase();
-                    if (test.includes('inventor+20')) {
-                        $('#' + control).append($('<option>', { value: item, text: convertItemToText(item) }));
-                    }
-                })
-        }
-    });
-}
-
-function convertItemToText(item) {
-    var text;
-    switch (item)
-    {
-        case 'Autodesk.Inventor+2018':
-            text = '2018';
-            break;
-        case 'Autodesk.Inventor+2019':
-            text = '2019';
-            break;
-        case 'Autodesk.Inventor+2020':
-            text = '2020';
-            break;
-        case 'Autodesk.Inventor+2021':
-            text = '2021';
-            break;
-        case 'Autodesk.Inventor+2022beta':
-            text = '2022 beta';
-            break;
-        default:
-            text = '2021';
-            break;
-    }
-    return text;
-}
-
-function login() {
-    $.post({
-        url: 'api/forge/oauth/cred',
-        contentType: 'application/json',
-        data: JSON.stringify({
-            ForgeClient: document.getElementById('forgeClientId').value,
-            ForgeSecret: document.getElementById('forgeClientSecret').value
-        }),
-        success: function () {
-            var engSel = document.getElementById('engineSelector');
-            engSel.style.display = 'block';
-            // clear all activity
-            clearAccount();
-        }
-    });
-}
-var choosenEngine;
-function selectEngine() {
-    createAppBundleActivity();          
-    choosenEngine = document.getElementById('engines').value;
-    var engSel = document.getElementById('engineSelector');
-    engSel.style.display = 'none';
-    var wndElem = document.getElementById('loginSetupWnd');
-    wndElem.style.display = 'none';
+function prepareWorkitem() {
+    lineDataToJSON();
+    startWorkitem();
 }
 
 function clearAccount() {
@@ -123,7 +52,7 @@ function createActivity(cb) {
         contentType: 'application/json',
         data: JSON.stringify({
             //zipFileName: 'MyWallShelf.zip',
-            engine: choosenEngine
+            engine: choosenBucket
         }),
         success: function (res) {
             writeLog('Activity: ' + res.activity);

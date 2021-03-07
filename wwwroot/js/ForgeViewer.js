@@ -1,10 +1,5 @@
 ﻿var viewer;
 
-$(document).ready(function () {
-    $('#startWorkitem').click(prepareWorkitem);
-
-});
-
 function launchViewer(urn) {
     var options = {
         env: 'AutodeskProduction',
@@ -30,10 +25,16 @@ function launchViewer(urn) {
 
 function onDocumentLoadSuccess(doc) {
     var viewables = doc.getRoot().getDefaultGeometry();
+    var loadingCircle = document.getElementById('loading');
+    loadingCircle.style.display = 'block';
     viewer.loadDocumentNode(doc, viewables).then(i => {
-        // documented loaded, user can upload background image for visalization
-    });
-}
+        setTimeout(() => {
+            loadingCircle.style.float = 'left';
+        }, 2000);        
+    })
+    // documented loaded, user can upload background image for visalization   
+};
+
 
 function onDocumentLoadFailure(viewerErrorCode) {
     console.error('onDocumentLoadFailure() - errorCode:' + viewerErrorCode);
@@ -45,10 +46,4 @@ function getForgeToken(callback) {
             callback(data.access_token, data.expires_in);
         });
     });
-}
-
-function prepareWorkitem() {
-
-    lineDataToJSON();
-    startWorkitem();
 }

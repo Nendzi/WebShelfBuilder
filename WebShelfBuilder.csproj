@@ -2,7 +2,14 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>wwwroot\favicon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\forgeviewer_original.html" />
+    <Content Remove="wwwroot\js\three.js" />
+    <Content Remove="wwwroot\js\UpdateSketcher.js" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autodesk.Forge" Version="1.8.0" />
@@ -13,6 +20,21 @@
   <ItemGroup>
     <Folder Include="wwwroot\bundles\" />
     <Folder Include="wwwroot\inputFiles\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
