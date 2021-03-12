@@ -6,7 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\css\Main_original.css" />
     <Content Remove="wwwroot\forgeviewer_original.html" />
+    <Content Remove="wwwroot\index_original.html" />
     <Content Remove="wwwroot\js\three.js" />
     <Content Remove="wwwroot\js\UpdateSketcher.js" />
   </ItemGroup>

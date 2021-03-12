@@ -20,6 +20,7 @@ img {
 
 .settingIcon {
     float: right;
+    cursor: pointer;
 }
 
 li {
@@ -58,7 +59,13 @@ li {
 .inputCred {
     font-family: 'Overpass', Geneva, Verdana, sans-serif;
     font-size: 14px;
-    width: 270px;
+    width: 280px;
+}
+
+.selectCred {
+    font-family: 'Overpass', Geneva, Verdana, sans-serif;
+    font-size: 14px;
+    width: 286px;
 }
 
 .divCenter select {

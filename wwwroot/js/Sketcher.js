@@ -178,11 +178,17 @@ document.getElementById('sketchViewer').onmousemove = function (event) {
             updatePosition(x_coord, y_coord, 3);
             updatePreview();
             //show text which represents lenght
+            var newLineLenght = lineLength(authenticCoord);
             var info = document.getElementById('info');
-            info.style.display = 'block';
-            info.style.left = (authenticCoord[0] + authenticCoord[3]) / 2 + 'px';
-            info.style.top = (authenticCoord[1] + authenticCoord[4]) / 2 + 'px';
-            info.innerHTML = lineLength(authenticCoord);
+            if (newLineLenght >= 150) {                
+                info.style.display = 'block';
+                info.style.left = (authenticCoord[0] + authenticCoord[3]) / 2 + 'px';
+                info.style.top = (authenticCoord[1] + authenticCoord[4]) / 2 + 'px';
+                info.innerHTML = newLineLenght;
+            }
+            else {
+                info.style.display = 'none';
+            }
         }
     }
 
@@ -359,6 +365,11 @@ document.getElementById('sketchViewer').onclick = function (event) {
         return;
     }
 
+    // Don't draw line shorter then 150mm.
+    // if click is not first and line is shorter then 150 then return
+    var newLineLenght = lineLength(authenticCoord);
+    if ((newLineLenght < 150 || isNaN(newLineLenght)) && !isItFirstCatch ) return;
+
     // catch coordinates at this point if it is first catch;
     if (isItFirstCatch) {
         cursor_x = event.offsetX - windowWidth / 2;
@@ -379,16 +390,16 @@ document.getElementById('sketchViewer').onclick = function (event) {
     }
 
     // set first point for line preview
-    updatePosition(x_coord, y_coord, 0);
-
-    // set point for line. Which point will be depends of array points
-    points.push(new THREE.Vector3(x_coord, y_coord, 0));
+    updatePosition(x_coord, y_coord, 0);   
 
     // save first point for closing loop
     if (points.length == 1) {
         firstPointX_coord = x_coord;
         firstPointY_coord = y_coord;
     }
+
+    // set point for line. Which point will be depends of array points
+    points.push(new THREE.Vector3(x_coord, y_coord, 0));
 
     //it is time for drawing line
     createLine();

@@ -12,9 +12,6 @@
     <link href="/css/Main.css" rel="stylesheet" />
     <link href="/css/CustomDropbox.css" rel="stylesheet" />
     <link href="/css/Sketcher.css" rel="stylesheet" />
-    <script src="/js/ForgeTree.js"></script>
-    <script src="/js/ForgeViewer.js"></script>
-    <script src="/js/ForgeDesignAutomation.js"></script>
     <!-- THREE js package from three -->
     <script src="//cdnjs.cloudflare.com/ajax/libs/three.js/r125/three.js"></script>
     <script src="/js/PreparingDataForForging.js"></script>
@@ -24,6 +21,10 @@
     <div class="column">
         <!-- oprions bar -->
         <div class="communicationPanel">
+            <div class="optionBtns">
+                <button id="forModeler" class="bttn onleft bttn-inactive">Forge model and documentation</button>
+                <button id="forVisualization" class="bttn onleft bttn-inactive">Visualisation</button>
+            </div>
             <div class="lineProperties" id="lineProp">
                 <div>
                     <div class="startPoint">
@@ -51,10 +52,6 @@
                 </div>
                 <label for="lght">Line length:</label>
                 <input type="number" id="lineLen" name="lght" min="100" max="2500" required>
-            </div>
-            <div class="optionBtns">
-                <button id="forModeler" class="bttn onleft bttn-inactive">Forge model and documentation</button>
-                <button id="forVisualization" class="bttn onleft bttn-inactive">Visualisation</button>
             </div>
         </div>        
         <!-- End of options bar -->
