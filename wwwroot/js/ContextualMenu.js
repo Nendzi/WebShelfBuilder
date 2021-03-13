@@ -39,27 +39,39 @@ function stopDrawing() {
     updatePosition(0, 0, 0);
     updatePosition(0, 0, 3);
     settingSwitches();
+    resetLineCounter();
     document.getElementById('info').style.display = 'none';
 }
 
+var closeCommandIsEnable = true;
+
 $('#closeLines').click(function () {
+    if (closeCommandIsEnable) {
+        closeConture();
+    }
+    else {
+        displayInfo('This contour cannot be closed ' + nextLineOrientation);
+    }
+});
+
+function closeConture() {
     // at least four points must be on canvas for closing
-    if (whiteboard.children.length > 3) {
+    if (lineCount > 2) {
         // read first point from current string
         points.push(new THREE.Vector3(firstPointX_coord, firstPointY_coord, 0));
         createLine();
+        resetLineCounter();
         stopDrawing();
     }
     else {
-        document.getElementById('infoWnd').style.display = 'block';
-        document.getElementById('infoWnd').style.top = window.innerHeight / 2 + 'px';
-        document.getElementById('infoWnd').style.left = window.innerWidth / 2 + 'px';
+        displayInfo('Close command can be used only on three and more lines.');
     }
-});
+};
 
 $('#clearCanvas').click(clearAllLines);
 
 function clearAllLines() {
+    document.getElementById('info').style.display = 'none';
     initEnv();
     initVars();
 }
@@ -73,7 +85,7 @@ function deletedSelectedLine() {
     // search for selected line in all lines
     for (var line of whiteboard.children) {
         // compare like objects
-        if (line===pickedObject) {
+        if (line === pickedObject) {
             //if line have been found delete it from children
             whiteboard.children.splice(index, 1);
             // simulate escape pressed
@@ -120,4 +132,29 @@ function toElement() {
     selectionMode = true;
     verFilterOn = false;
     horFilterOn = false;
+}
+
+function resetLineCounter() {
+    lineCount = 0;
+}
+
+function testClosePossibility(inputX, inputY) {
+    var closeCondition1 = nextLineOrientation == 'vertical' && firstPointY_coord == inputY;
+    var closeCondition2 = nextLineOrientation == 'horizontal' && firstPointX_coord == inputX;
+    var closeCondition = closeCondition1 || closeCondition2;
+
+    if (closeCondition) {
+        closeCommandIsEnable = true;
+    }
+    else {
+        closeCommandIsEnable = false;
+    }
+}
+
+function displayInfo(message) {
+    var infoWnd = document.getElementById('infoWnd');
+    infoWnd.children[1].innerHTML = message;
+    infoWnd.style.display = 'block';
+    infoWnd.style.top = window.innerHeight / 2 + 'px';
+    infoWnd.style.left = window.innerWidth / 2 + 'px';
 }

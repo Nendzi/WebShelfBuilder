@@ -27,6 +27,7 @@ var firstPointMarker;
 var secondPointMarker;
 var MAX_POINTS;
 var drawCount;
+var lineCount;
 
 var points;
 var pointsNumber
@@ -45,6 +46,10 @@ var anyFilterOn;
 var horFilterOn;
 var verFilterOn;
 var makeTouch;
+
+// this variable indicates what orientation of next line will be.
+// this line will be set dynamically when user choose orientation of first line.
+var nextLineOrientation;
 
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -117,6 +122,7 @@ function initVars() {
     pointsNumber = 0;
     cursor_x = -1;
     cursor_y = -1;
+    lineCount = 0;
     isItFirstCatch = true;
 
     needAnimate = false;
@@ -384,22 +390,24 @@ document.getElementById('sketchViewer').onclick = function (event) {
     // keep horizontal or vertical lines
     if (horOrient(x_coord - cursor_x, y_coord - cursor_y)) {
         y_coord = cursor_y;
+        nextLineOrientation = 'vertical';
     }
     else {
         x_coord = cursor_x;
+        nextLineOrientation = 'horizontal';
     }
 
     // set first point for line preview
-    updatePosition(x_coord, y_coord, 0);   
+    updatePosition(x_coord, y_coord, 0);
+
+    // set point for line. Which point will be depends of array points
+    points.push(new THREE.Vector3(x_coord, y_coord, 0));
 
     // save first point for closing loop
     if (points.length == 1) {
         firstPointX_coord = x_coord;
         firstPointY_coord = y_coord;
     }
-
-    // set point for line. Which point will be depends of array points
-    points.push(new THREE.Vector3(x_coord, y_coord, 0));
 
     //it is time for drawing line
     createLine();
@@ -425,10 +433,14 @@ function createLine() {
         const lineMaterial = new THREE.LineBasicMaterial({ color: 0x0000ff });
         var line = new THREE.Line(lineGeometry, lineMaterial);
         whiteboard.add(line);
+        // test if there is possibility to close contur from last to first point
+        testClosePossibility(points[1].x, points[1].y);
+        // pointsNumber was 2 now should be 1
         pointsNumber = 1;
         // last point will be first point
         points.shift();
-
+        // increase number of lines in group. This counter will be reset in close command
+        lineCount++;
         render();
     }
 }
