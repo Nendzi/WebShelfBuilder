@@ -9,6 +9,7 @@ $(".infotextConteiner").click(function () {
     if (isOnRight) {
         $(this).toggleClass("rotateTwo");
         fileTypeToTranslate = "zipfile3D";
+        isOnRight = false;
     }
     else {
         isOnRight = true;
