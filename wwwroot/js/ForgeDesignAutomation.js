@@ -1,7 +1,21 @@
 ﻿$(document).ready(function () {
+    $('#forVisualization').click(function () {
+        openVisualization();
+    });
+    $('#forSketcher').click(function () {
+        openSketcher();
+    });
     $('#startWorkitem').click(prepareWorkitem);
     startConnection();
 });
+
+function openVisualization() {
+    window.location = 'forgeviewer.html';
+}
+
+function openSketcher() {
+    window.location = 'sketcher.html';
+}
 
 function prepareWorkitem() {
     lineDataToJSON();
@@ -109,14 +123,13 @@ function startConnection(onReady) {
                     connectionId = id; // we'll need this...
                     if (onReady) onReady();
                 });
-        });
-
-    connection.on("downloadResult", function (url) {
-        writeLog('<a href="' + url + '">Download result file here</a>');
-    });
+        })
 
     connection.on("onComplete", function (message) {
         writeLog(message);
-        $('#appBuckets').jstree(true).refresh();
+    });
+
+    connection.on("onProgress", function (message) {
+        writeLog(message);
     });
 }

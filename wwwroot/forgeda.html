@@ -14,9 +14,9 @@
     <script src="//unpkg.com/@aspnet/signalr@1.1.0/dist/browser/signalr.min.js"></script>
     <!--this project files-->
     <link href="/css/Main.css" rel="stylesheet" />
-    <link href="/css/CustomDropbox.css" rel="stylesheet"/>
-    <link href="css/ForgeDA.css" rel="stylesheet" />
-    <script src="/js/ForgeTree.js"></script>
+    <link href="/css/CustomDropbox.css" rel="stylesheet" />
+    <link href="/css/ForgeDA.css" rel="stylesheet" />
+    <script src="/js/PreparingDataForForging.js"></script>
     <script src="/js/ForgeDesignAutomation.js"></script>
 </head>
 
@@ -24,43 +24,40 @@
     <div class="column">
         <!-- oprions bar -->
         <div class="communicationPanel">
-
-            <div id="forgeViewer">
-                <div class="shelfData">
-                    <div>
-                        <label for="depth">Shelf depth</label>
-                        <input id="shelfDepth" class="inputNumbers" type="number" min="100" max="400" required />
-                    </div>
-                    <div>
-                        <label for="thkness">Shelf thickness</label>
-                        <input id="shelfThickness" class="inputNumbers" type="number" min="18" max="40" required />
-                    </div>
-                    <div class="custom-select">
-                        <select id="selectMat">
-                            <option value="0">Select material</option>
-                            <option value="1">English Oak</option>
-                            <option value="2">Maple</option>
-                            <option value="3">Red Birch</option>
-                            <option value="4">Teak</option>
-                            <option value="5">Wild Cherry</option>
-                            <option value="6">Yellow Pine</option>
-                        </select>
-                    </div>
-                    <div>
-                        <button id="startWorkitem" class="bttn onleft">Commence 3D model creation</button>
-                    </div>
-                </div>
-            </div>
             <div class="optionBtns">
-                <button id="forSketcher" class="bttn onleft">Sketch panel</button>
+                <button id="forSketcher" class="bttn onleft bttn-inactive">Sketch panel</button>
                 <button id="forVisualization" class="bttn onleft bttn-inactive">Visualisation</button>
+            </div>
+            <div class="shelfData">
+                <div>
+                    <label for="depth">Shelf depth</label>
+                    <input id="shelfDepth" class="inputNumbers" type="number" min="100" max="400" required />
+                </div>
+                <div>
+                    <label for="thkness">Shelf thickness</label>
+                    <input id="shelfThickness" class="inputNumbers" type="number" min="18" max="40" required />
+                </div>
+                <div class="custom-select">
+                    <select id="selectMat">
+                        <option value="0">Select material</option>
+                        <option value="1">English Oak</option>
+                        <option value="2">Maple</option>
+                        <option value="3">Red Birch</option>
+                        <option value="4">Teak</option>
+                        <option value="5">Wild Cherry</option>
+                        <option value="6">Yellow Pine</option>
+                    </select>
+                </div>
+                <div class="optionBtns">
+                    <button id="startWorkitem" class="bttn onleft">Commence 3D model creation</button>
+                </div>
             </div>
         </div>
         <!-- End of options bar -->
         <div id="visual" class="visualPanel">
             <div>
-                <pre id="outputlog" style="height: calc(100vh - 120px); overflow-y: scroll;"></pre>
-            </div>            
+                <pre id="outputlog" style="height: calc(100vh - 20px); overflow-y: scroll;"></pre>
+            </div>
         </div>
     </div>
 

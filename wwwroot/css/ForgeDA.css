@@ -8,22 +8,32 @@
     min-width: 350px;
     height: 100%;
     border: 2px solid #a2a2a2;
-}
-
-#appBuckets {
-    overflow: auto;
-    width: 100%;
-    height: calc(100vh - 450px);
+    padding-left: 10px;
 }
 
 .visualPanel {
-    width: calc( 70% - 4px);
+    width: calc( 70% - 20px);
     height: 100%;
+}
+
+.optionBtns {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+label {
+    width: 119px;
+    display: inline-block;
 }
 
 .inputNumbers {
     font-family: 'Overpass', Geneva, Verdana, sans-serif;
     font-size: 14px;
+    width: 60px;
+    margin-top: 10px;
 }
 
 .shelfData {

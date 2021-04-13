@@ -12,8 +12,22 @@ function openVisualization() {
 }
 
 function openDesignAutomation() {
+    var allCoordinates = collectCoordinates();
+    window.sessionStorage.setItem('ShelfGeomData', allCoordinates);        
     window.location = 'forgeda.html';
 }
+
+function collectCoordinates() {
+    var allValues = '';
+    var chCount = whiteboard.children.length;
+    for (var i = 0; i < chCount; i++) {
+        for (var j = 0; j < 6; j++) {
+            allValues += whiteboard.children[i].geometry.attributes.position.array[j] + ';';
+        }
+        allValues += '>';
+    }
+    return allValues;
+};
 
 const sketch = document.getElementById('visual');
 var windowWidth = sketch.clientWidth;
@@ -186,7 +200,7 @@ document.getElementById('sketchViewer').onmousemove = function (event) {
             //show text which represents lenght
             var newLineLenght = lineLength(authenticCoord);
             var info = document.getElementById('info');
-            if (newLineLenght >= 150) {                
+            if (newLineLenght >= 150) {
                 info.style.display = 'block';
                 info.style.left = (authenticCoord[0] + authenticCoord[3]) / 2 + 'px';
                 info.style.top = (authenticCoord[1] + authenticCoord[4]) / 2 + 'px';
@@ -236,7 +250,7 @@ function updatePreview() {
     render();
 }
 
-function setMakrerOnLineEnd(endId,zIndex) {
+function setMakrerOnLineEnd(endId, zIndex) {
     //endId can be 1 or 2
     var marker;
     var xm;
@@ -251,7 +265,7 @@ function setMakrerOnLineEnd(endId,zIndex) {
         ym = pickedObject.geometry.attributes.position.array[4];
     } else {
         //use 3 or 4 for moving sphere beyond camera
-        endId = endId-2;
+        endId = endId - 2;
         xm = 0;
         ym = 0;
         zIndex = 200;
@@ -268,8 +282,8 @@ document.getElementById('sketchViewer').onclick = function (event) {
         // and show end points coordinates
         showLineProperties();
         // add point markers on the line ends
-        setMakrerOnLineEnd(1,10);
-        setMakrerOnLineEnd(2,10);
+        setMakrerOnLineEnd(1, 10);
+        setMakrerOnLineEnd(2, 10);
         render();
         // set var for keeping selection
         keepSelected = true;
@@ -374,7 +388,7 @@ document.getElementById('sketchViewer').onclick = function (event) {
     // Don't draw line shorter then 150mm.
     // if click is not first and line is shorter then 150 then return
     var newLineLenght = lineLength(authenticCoord);
-    if ((newLineLenght < 150 || isNaN(newLineLenght)) && !isItFirstCatch ) return;
+    if ((newLineLenght < 150 || isNaN(newLineLenght)) && !isItFirstCatch) return;
 
     // catch coordinates at this point if it is first catch;
     if (isItFirstCatch) {

@@ -229,15 +229,7 @@ namespace WebShelfBuilder.Controllers
                                 Verb = Verb.Get,
                                 Zip = true
                             }
-                        },/*
-                        { "inputJson", new Parameter()
-                            {
-                                Description = "input json",
-                                LocalName = "params.json",
-                                Verb = Verb.Get,
-                                Zip = false
-                        }
-                                },*/
+                        },
                         { "outputFile", new Parameter()
                             {
                                 Description = "Resulting model and drawing",
@@ -299,17 +291,16 @@ namespace WebShelfBuilder.Controllers
             {
                 DataSetBuilder dataSetBuilder = new DataSetBuilder(LocalDataSetFolder, "DataSet");
                 dataSetBuilder.SaveJsonData(input.shelfData, "params.json");
-                dataSetBuilder.ZipFolder("MyWallShelf.zip");                
+                dataSetBuilder.ZipFolder("MyWallShelf.zip");
             }
             catch (Exception ex)
             {
-
                 return Ok(new { WorkItemId = ex.Message }); ;
             }
 
             JObject connItemData = JObject.Parse(input.forgeData);
             string uniqueActivityName = string.Format("{0}.{1}+{2}", NickName, ActivityName, Alias);
-            string browerConnectionId = connItemData["browerConnectionId"].Value<string>();
+            string browserConnectionId = connItemData["browerConnectionId"].Value<string>();
 
             // TODO - this piece of cod will be used for sending picture in Visualization module
             // save the file on the server
@@ -383,29 +374,48 @@ namespace WebShelfBuilder.Controllers
             };
             // prepare & submit workitem
             // the callback contains the connectionId (used to identify the client) and the outputFileName of this workitem
-            string callbackUrl = string.Format(
+
+            XrefTreeArgument completedArgument = new XrefTreeArgument()
+            {
+                Verb = Verb.Post,
+                Url = string.Format(
                 "{0}/api/forge/callback/designautomation?id={1}&outputFileName={2}",
-                //OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
-                "https://webwallshelfbuilder.herokuapp.com",
-                browerConnectionId,
-                outputFileNameOSS);
+                OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                //"https://webwallshelfbuilder.herokuapp.com",
+                browserConnectionId,
+                outputFileNameOSS)
+            };
+
+            XrefTreeArgument progressArgument = new XrefTreeArgument()
+            {
+                Verb = Verb.Post,
+                Url = string.Format(
+                    "{0}/api/forge/callback/designautomation/progress?id={1}",
+                    OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                    //"https://webwallshelfbuilder.herokuapp.com",
+                    browserConnectionId)
+            };
+
             WorkItem workItemSpec = new WorkItem()
             {
                 ActivityId = uniqueActivityName,
                 Arguments = new Dictionary<string, IArgument>()
                 {
                     { "inputFile", inputFileArgument },
-                    //{ "inputJson",  inputJsonArgument },
                     { "outputFile", outputFileArgument },
                     { "outputPDFFile", outputPDFFileArgument },
-                    { "onComplete", new XrefTreeArgument { Verb = Verb.Post, Url = callbackUrl } }
+                    { "onComplete", completedArgument },
+                    { "onProgress", progressArgument }
                 }
             };
 
             try
             {
                 WorkItemStatus workItemStatus = await _designAutomation.CreateWorkItemAsync(workItemSpec);
-                return Ok(new { WorkItemId = workItemStatus.Id });
+                return Ok(new
+                {
+                    WorkItemId = workItemStatus.Id
+                });
             }
             catch (Exception e)
             {
@@ -424,7 +434,7 @@ namespace WebShelfBuilder.Controllers
         }
 
         /// <summary>
-        /// Callback from Design Automation Workitem (onProgress or onComplete)
+        /// Callback from Design Automation Workitem onComplete
         /// </summary>
         [HttpPost]
         [Route("/api/forge/callback/designautomation")]
@@ -436,20 +446,17 @@ namespace WebShelfBuilder.Controllers
                 JObject bodyJson = JObject.Parse((string)body.ToString());
                 await _hubContext.Clients.Client(id).SendAsync("onComplete", bodyJson.ToString());
 
+                /*
                 var client = new RestClient(bodyJson["reportUrl"].Value<string>());
                 var request = new RestRequest(string.Empty);
-
+                
                 // send the result output log to the client
                 byte[] bs = client.DownloadData(request);
                 string report = System.Text.Encoding.Default.GetString(bs);
-                await _hubContext.Clients.Client(id).SendAsync("onComplete", report);
-
-                // generate a signed URL to download the result file and send to the client
-                ObjectsApi objectsApi = new ObjectsApi();
-                dynamic signedUrl = await objectsApi.CreateSignedResourceAsyncWithHttpInfo(bucketKey, outputFileName, new PostBucketsSigned(10), "read");
-                await _hubContext.Clients.Client(id).SendAsync("downloadResult", (string)(signedUrl.Data.signedUrl));
-
+                await _hubContext.Clients.Client(id).SendAsync("onComplete", report);*/
+               
                 // generate copy of object to translate in 2D. Original will be transpated in 3D
+                ObjectsApi objectsApi = new ObjectsApi();
                 string[] outputFileNameParts = outputFileName.Split('_');
                 string newFileName = outputFileNameParts[0] + "_outcopy_" + outputFileNameParts[2];
                 await objectsApi.CopyToAsync(bucketKey, outputFileName, newFileName);
@@ -457,6 +464,25 @@ namespace WebShelfBuilder.Controllers
             catch { }
 
             // ALWAYS return ok (200)
+            return Ok();
+        }
+
+        /// <summary>
+        /// Callback from Design Automation Workitem onProgress
+        /// </summary>
+        [HttpPost]
+        [Route("/api/forge/callback/designautomation/progress")]
+
+        public async Task<IActionResult> OnCallback(string id, [FromBody] dynamic body)
+        {
+            try
+            {
+                // send the progress report
+                JObject bodyJson = JObject.Parse((string)body.ToString());
+                await _hubContext.Clients.Client(id).SendAsync("onProgress", bodyJson.ToString());
+            }
+            catch{}
+
             return Ok();
         }
 

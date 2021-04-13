@@ -6,11 +6,11 @@ var coordOfElements = { x1: 0, y1: 0, x2: 0, y2: 0 };
 function lineDataToJSON() {
     const shelfDepth = document.getElementById('shelfDepth').value;
     const shelfThk = document.getElementById('shelfThickness').value;
-    const shelfElements = whiteboard.children;
+    const shelfElements = window.sessionStorage.getItem('ShelfGeomData').split(';>');
     const material = document.getElementById('selectMat').value;
 
-    for (var i = 3; i < shelfElements.length; i++) {
-        coordOfshelfElement = shelfElements[i].geometry.attributes.position;
+    for (var i = 3; i < shelfElements.length - 1; i++) {
+        coordOfshelfElement = shelfElements[i].split(';');
         putEndPointCoordInVar(coordOfshelfElement);
         jsonItem = {};
         jsonItem['length'] = getLineLength(coordOfElements);
@@ -28,10 +28,10 @@ function lineDataToJSON() {
 }
 
 function putEndPointCoordInVar(lineObj) {
-    coordOfElements.x1 = lineObj.array[0];
-    coordOfElements.y1 = lineObj.array[1];
-    coordOfElements.x2 = lineObj.array[3];
-    coordOfElements.y2 = lineObj.array[4];
+    coordOfElements.x1 = parseInt(lineObj[0]);
+    coordOfElements.y1 = parseInt(lineObj[1]);
+    coordOfElements.x2 = parseInt(lineObj[3]);
+    coordOfElements.y2 = parseInt(lineObj[4]);
 }
 
 function getLineLength(lineObj) {
