@@ -380,8 +380,8 @@ namespace WebShelfBuilder.Controllers
                 Verb = Verb.Post,
                 Url = string.Format(
                 "{0}/api/forge/callback/designautomation?id={1}&outputFileName={2}",
-                OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
-                //"https://webwallshelfbuilder.herokuapp.com",
+                //OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                "https://webwallshelfbuilder.herokuapp.com",
                 browserConnectionId,
                 outputFileNameOSS)
             };
@@ -391,8 +391,8 @@ namespace WebShelfBuilder.Controllers
                 Verb = Verb.Post,
                 Url = string.Format(
                     "{0}/api/forge/callback/designautomation/progress?id={1}",
-                    OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
-                    //"https://webwallshelfbuilder.herokuapp.com",
+                    //OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                    "https://webwallshelfbuilder.herokuapp.com",
                     browserConnectionId)
             };
 
