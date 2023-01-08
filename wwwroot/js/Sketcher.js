@@ -73,7 +73,7 @@ function initEnv() {
     var nurbs = new Float32Array(MAX_POINTS * 3);
     lineGeometry.addAttribute('nurb', new THREE.BufferAttribute(nurbs, 3));
 
-    //drawcalls
+    //drawcalls    
     drawCount = 2;
     preLineGeometry.setDrawRange(0, drawCount);
 

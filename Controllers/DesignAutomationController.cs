@@ -133,8 +133,7 @@ namespace WebShelfBuilder.Controllers
                     Package = packageZipPath,
                     Engine = EngineName,
                     Id = AppBundleName,
-                    Description = "Creates wall shelf based on JSON file",
-
+                    Description = "Creates wall shelf based on JSON file"
                 };
                 newAppVersion = await _designAutomation.CreateAppBundleAsync(appBundleSpec);
                 if (newAppVersion == null) throw new Exception("Cannot create new app");
@@ -385,10 +384,22 @@ namespace WebShelfBuilder.Controllers
             // the callback contains the connectionId (used to identify the client) and the outputFileName of this workitem
             string callbackUrl = string.Format(
                 "{0}/api/forge/callback/designautomation?id={1}&outputFileName={2}",
-                //OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
-                "https://webwallshelfbuilder.herokuapp.com",
-                browerConnectionId,
-                outputFileNameOSS);
+                OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                //"https://webwallshelfbuilder.herokuapp.com",
+                browserConnectionId,
+                outputFileNameOSS)
+            };
+
+            XrefTreeArgument progressArgument = new XrefTreeArgument()
+            {
+                Verb = Verb.Post,
+                Url = string.Format(
+                    "{0}/api/forge/callback/designautomation/progress?id={1}",
+                    OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                    //"https://webwallshelfbuilder.herokuapp.com",
+                    browserConnectionId)
+            };
+
             WorkItem workItemSpec = new WorkItem()
             {
                 ActivityId = uniqueActivityName,
@@ -436,19 +447,15 @@ namespace WebShelfBuilder.Controllers
                 JObject bodyJson = JObject.Parse((string)body.ToString());
                 await _hubContext.Clients.Client(id).SendAsync("onComplete", bodyJson.ToString());
 
+                /*
                 var client = new RestClient(bodyJson["reportUrl"].Value<string>());
                 var request = new RestRequest(string.Empty);
 
                 // send the result output log to the client
                 byte[] bs = client.DownloadData(request);
                 string report = System.Text.Encoding.Default.GetString(bs);
-                await _hubContext.Clients.Client(id).SendAsync("onComplete", report);
-
-                // generate a signed URL to download the result file and send to the client
-                ObjectsApi objectsApi = new ObjectsApi();
-                dynamic signedUrl = await objectsApi.CreateSignedResourceAsyncWithHttpInfo(bucketKey, outputFileName, new PostBucketsSigned(10), "read");
-                await _hubContext.Clients.Client(id).SendAsync("downloadResult", (string)(signedUrl.Data.signedUrl));
-
+                await _hubContext.Clients.Client(id).SendAsync("onComplete", report);*/
+               
                 // generate copy of object to translate in 2D. Original will be transpated in 3D
                 string[] outputFileNameParts = outputFileName.Split('_');
                 string newFileName = outputFileNameParts[0] + "_outcopy_" + outputFileNameParts[2];
