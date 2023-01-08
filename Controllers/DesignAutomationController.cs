@@ -308,7 +308,7 @@ namespace WebShelfBuilder.Controllers
 
             JObject connItemData = JObject.Parse(input.forgeData);
             string uniqueActivityName = string.Format("{0}.{1}+{2}", NickName, ActivityName, Alias);
-            string browerConnectionId = connItemData["browerConnectionId"].Value<string>();
+            string browserConnectionId = connItemData["browerConnectionId"].Value<string>();
 
             // TODO - this piece of cod will be used for sending picture in Visualization module
             // save the file on the server
@@ -384,18 +384,17 @@ namespace WebShelfBuilder.Controllers
             // the callback contains the connectionId (used to identify the client) and the outputFileName of this workitem
             string callbackUrl = string.Format(
                 "{0}/api/forge/callback/designautomation?id={1}&outputFileName={2}",
-                OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"),
                 //"https://webwallshelfbuilder.herokuapp.com",
                 browserConnectionId,
-                outputFileNameOSS)
-            };
-
+                outputFileNameOSS);
+            
             XrefTreeArgument progressArgument = new XrefTreeArgument()
             {
                 Verb = Verb.Post,
                 Url = string.Format(
                     "{0}/api/forge/callback/designautomation/progress?id={1}",
-                    OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"), 
+                    OAuthController.GetAppSetting("FORGE_WEBHOOK_URL"),
                     //"https://webwallshelfbuilder.herokuapp.com",
                     browserConnectionId)
             };
@@ -459,6 +458,7 @@ namespace WebShelfBuilder.Controllers
                 // generate copy of object to translate in 2D. Original will be transpated in 3D
                 string[] outputFileNameParts = outputFileName.Split('_');
                 string newFileName = outputFileNameParts[0] + "_outcopy_" + outputFileNameParts[2];
+                ObjectsApi objectsApi = new ObjectsApi();
                 await objectsApi.CopyToAsync(bucketKey, outputFileName, newFileName);
             }
             catch { }
